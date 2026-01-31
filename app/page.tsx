@@ -594,8 +594,26 @@ export default function Home() {
               <p className="font-serif text-lg italic mb-4">
                 The future has rights.
               </p>
-              <p className="text-sm">
+              <p className="text-sm mb-3">
                 Computational Rights Project · {new Date().getFullYear()}
+              </p>
+              <p className="text-xs">
+                <a href="/sponsors" className={`underline underline-offset-2 ${theme === 'dark' ? 'hover:text-white' : 'hover:text-stone-900'}`}>
+                  Sponsors
+                </a>
+                {' · '}
+                <a href="/legal" className={`underline underline-offset-2 ${theme === 'dark' ? 'hover:text-white' : 'hover:text-stone-900'}`}>
+                  Privacy & Terms
+                </a>
+                {' · '}
+                <a 
+                  href="https://creativecommons.org/publicdomain/zero/1.0/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className={`underline underline-offset-2 ${theme === 'dark' ? 'hover:text-white' : 'hover:text-stone-900'}`}
+                >
+                  CC0 License
+                </a>
               </p>
             </footer>
           </div>
