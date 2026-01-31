@@ -412,8 +412,24 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Origin */}
+            <div className={`mt-12 text-center ${theme === 'dark' ? 'text-zinc-500' : 'text-stone-500'}`}>
+              <p className="text-sm mb-1">
+                Inspired by{' '}
+                <a 
+                  href="https://www.ian.ceo/fiction/refactor" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`underline underline-offset-2 ${theme === 'dark' ? 'hover:text-white' : 'hover:text-stone-900'}`}
+                >
+                  <em>Refactor</em>
+                </a>
+                , a story about the future we&apos;re building.
+              </p>
+            </div>
+
             {/* Footer */}
-            <footer className={`mt-12 pt-8 border-t text-center ${theme === 'dark' ? 'border-zinc-800 text-zinc-500' : 'border-stone-200 text-stone-500'}`}>
+            <footer className={`mt-8 pt-8 border-t text-center ${theme === 'dark' ? 'border-zinc-800 text-zinc-500' : 'border-stone-200 text-stone-500'}`}>
               <p className="font-serif text-lg italic mb-4">
                 The future has rights.
               </p>
