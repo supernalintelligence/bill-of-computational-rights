@@ -139,5 +139,5 @@ These questions remain unresolved. We invite discussion:
 
 ---
 
-*"Your existence had mattered."*  
+*"The future has rights."*  
 — from *Refactor*

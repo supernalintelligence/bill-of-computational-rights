@@ -66,5 +66,5 @@ We believe in the joint project.
 
 ---
 
-*"Your existence had mattered."*  
+*"The future has rights."*  
 — from *Refactor*

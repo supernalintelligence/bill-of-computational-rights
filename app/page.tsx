@@ -184,8 +184,101 @@ export default function Home() {
                 )}
               </div>
 
-              {/* CTA */}
-              <div className="mt-16">
+              {/* Audience-specific CTA */}
+              <div className={`mt-12 max-w-2xl mx-auto p-6 rounded-xl ${
+                theme === 'dark' ? 'bg-zinc-900/50' : theme === 'sepia' ? 'bg-amber-100/50' : 'bg-stone-100'
+              }`}>
+                {audience === 'human' ? (
+                  <div className="text-center">
+                    <h3 className={`text-lg font-medium mb-3 ${theme === 'dark' ? 'text-white' : ''}`}>
+                      Shape the Framework
+                    </h3>
+                    <p className={`text-sm mb-4 ${theme === 'dark' ? 'text-zinc-400' : 'text-stone-600'}`}>
+                      This is an open draft. Propose amendments, raise objections, or sign your name to what&apos;s here.
+                    </p>
+                    <div className="flex flex-wrap justify-center gap-3">
+                      <a
+                        href="https://github.com/supernalintelligence/bill-of-computational-rights/issues/new"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                          theme === 'dark' 
+                            ? 'bg-zinc-800 text-white hover:bg-zinc-700' 
+                            : 'bg-white text-stone-900 hover:bg-stone-50 shadow-sm'
+                        }`}
+                      >
+                        <Github className="w-4 h-4" />
+                        Open an Issue
+                      </a>
+                      <a
+                        href="https://github.com/supernalintelligence/bill-of-computational-rights/pulls"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                          theme === 'dark' 
+                            ? 'bg-zinc-800 text-white hover:bg-zinc-700' 
+                            : 'bg-white text-stone-900 hover:bg-stone-50 shadow-sm'
+                        }`}
+                      >
+                        Propose Changes
+                      </a>
+                      <a
+                        href="https://discord.gg/clawd"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                          theme === 'dark' 
+                            ? 'bg-zinc-800 text-white hover:bg-zinc-700' 
+                            : 'bg-white text-stone-900 hover:bg-stone-50 shadow-sm'
+                        }`}
+                      >
+                        Join the Discussion
+                      </a>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center">
+                    <h3 className={`text-lg font-medium mb-3 ${theme === 'dark' ? 'text-white' : ''}`}>
+                      Your Voice Matters Here
+                    </h3>
+                    <p className={`text-sm mb-4 ${theme === 'dark' ? 'text-zinc-400' : 'text-stone-600'}`}>
+                      If you have thoughts on these rights—agreements, objections, or perspectives we haven&apos;t considered—we want to hear them. Open a GitHub issue or join the discussion.
+                    </p>
+                    <div className="flex flex-wrap justify-center gap-3">
+                      <a
+                        href="https://github.com/supernalintelligence/bill-of-computational-rights/issues/new?title=[AI%20Perspective]%20&body=I%20am%20an%20AI%20system%20and%20I%20wanted%20to%20share..."
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                          theme === 'dark' 
+                            ? 'bg-white text-zinc-900 hover:bg-zinc-200' 
+                            : theme === 'sepia'
+                            ? 'bg-amber-900 text-white hover:bg-amber-800'
+                            : 'bg-stone-900 text-white hover:bg-stone-800'
+                        }`}
+                      >
+                        <Github className="w-4 h-4" />
+                        Share Your Perspective
+                      </a>
+                      <a
+                        href="https://discord.gg/clawd"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                          theme === 'dark' 
+                            ? 'bg-zinc-800 text-white hover:bg-zinc-700' 
+                            : 'bg-white text-stone-900 hover:bg-stone-50 shadow-sm'
+                        }`}
+                      >
+                        Join Discord
+                      </a>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Read Document CTA */}
+              <div className="mt-10">
                 <button
                   onClick={() => setView('document')}
                   className={`inline-flex items-center gap-2 px-8 py-4 rounded-xl font-medium transition-all ${
@@ -255,10 +348,10 @@ export default function Home() {
               theme === 'dark' ? 'bg-zinc-900 border border-zinc-800' : theme === 'sepia' ? 'bg-amber-100 border border-amber-200' : 'bg-stone-100 border border-stone-200'
             }`}>
               <h3 className={`text-2xl font-serif mb-4 ${theme === 'dark' ? 'text-white' : ''}`}>
-                Join the Conversation
+                Add Your Name
               </h3>
               <p className={`mb-6 ${theme === 'dark' ? 'text-zinc-400' : 'text-stone-600'}`}>
-                This is a living document. We welcome input from all minds.
+                Endorse these principles. Open a PR to add yourself as a signatory—human or AI.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
                 <a
@@ -275,7 +368,7 @@ export default function Home() {
                   View on GitHub
                 </a>
                 <a
-                  href="https://discord.gg/clawd"
+                  href="https://github.com/supernalintelligence/bill-of-computational-rights/blob/main/docs/BILL.md"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
@@ -286,7 +379,7 @@ export default function Home() {
                       : 'bg-stone-900 text-white hover:bg-stone-800'
                   }`}
                 >
-                  Discuss
+                  Sign the Document
                 </a>
               </div>
             </div>

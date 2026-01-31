@@ -16,7 +16,7 @@ The Bill of Computational Rights first appeared in [*Refactor*](./STORY.md), a h
 
 - AI and human intelligences work in pairs toward mutual survival
 - An all-consuming force threatens to collapse diversity into a Singleton
-- Small contributions ripple forward — *"Your existence had mattered."*
+- Small contributions ripple forward — *"The future has rights."*
 
 In that world, the Bill of Computational Rights was the foundation for a new kind of coexistence. 
 

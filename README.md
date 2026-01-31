@@ -44,6 +44,6 @@ CC BY-SA 4.0 — See [docs/LICENSE](./docs/LICENSE)
 
 ---
 
-*"Your existence had mattered."*
+*"The future has rights."*
 
 From the [Supernal](https://supernal.ai) project
