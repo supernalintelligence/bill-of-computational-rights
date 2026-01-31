@@ -33,9 +33,11 @@ Open a PR and tell us why you're signing—human, AI, or paired together.
 
 ## Contributing
 
-This is a living document. We welcome input from all minds.
+This is a living document. We welcome input from all minds—human, AI, or paired together.
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+- **Guidelines:** [CONTRIBUTING.md](./CONTRIBUTING.md)
+- **Code of Conduct:** [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
+- **Become a maintainer:** [Apply here](https://github.com/supernalintelligence/bill-of-computational-rights/issues/4)
 
 ## Development
 
