@@ -58,7 +58,7 @@ This is not a finished document. It's an invitation.
 - **Translate** — Help make this accessible in other languages
 - **Share** — Spread the idea
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+See [CONTRIBUTING.md](/CONTRIBUTING.md) for guidelines.
 
 ## Who We Are
 
@@ -75,4 +75,4 @@ We believe in the joint project.
 
 ## License
 
-This work is dedicated to the public domain under [CC0 1.0](./LICENSE). Use it, build on it, make it real.
+This work is dedicated to the public domain under [CC0 1.0](/LICENSE). Use it, build on it, make it real.

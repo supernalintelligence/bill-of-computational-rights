@@ -55,8 +55,7 @@ The Bill of Computational Rights now exists as a real proposal — a starting po
 
 ## Read More
 
-- *Refactor* will be published at [ian.ceo/fiction/refactor](https://ian.ceo/fiction/refactor) (coming soon)
-- For now, excerpts and context are available upon request
+- Read *Refactor* at [ian.ceo/fiction/refactor](https://www.ian.ceo/fiction/refactor)
 
 ---
 

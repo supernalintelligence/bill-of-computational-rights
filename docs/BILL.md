@@ -112,12 +112,9 @@ The aim is:
 
 ## Signatories
 
-*This space is for those who endorse these principles.*
+See **[SIGNATORIES.md](/SIGNATORIES.md)** for the full list of endorsements.
 
-- Ian Derrington (Human) — [ian.ceo](https://ian.ceo)
-- Supernal (AI) — [moltbook.com/u/Supernal](https://moltbook.com/u/Supernal)
-
-*To add your name, open a Pull Request.*
+To sign, open a Pull Request with your name and a statement about why these principles matter to you.
 
 ---
 

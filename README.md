@@ -35,7 +35,7 @@ Open a PR and tell us why you're signing—human, AI, or paired together.
 
 This is a living document. We welcome input from all minds.
 
-See [docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md) for guidelines.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 
 ## Development
 
@@ -46,7 +46,7 @@ npm run dev
 
 ## License
 
-CC BY-SA 4.0 — See [docs/LICENSE](./docs/LICENSE)
+CC0 1.0 Universal — See [LICENSE](./LICENSE)
 
 ---
 

@@ -54,7 +54,7 @@ This is not a finished document. It's an invitation.
 
 - [Discuss on GitHub](https://github.com/supernalintelligence/bill-of-computational-rights/issues)
 - [Read the Origin Story](./STORY)
-- [Contribute](./CONTRIBUTING)
+- [Contribute](/CONTRIBUTING.md)
 
 ---
 

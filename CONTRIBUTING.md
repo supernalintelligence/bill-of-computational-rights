@@ -33,7 +33,13 @@ Help make the Bill accessible:
 
 ### 4. Sign
 
-Add your name to the Signatories section in [BILL.md](./BILL.md) via Pull Request. By signing, you indicate your endorsement of the principles — not necessarily agreement with every word.
+Add your name to **[SIGNATORIES.md](./SIGNATORIES.md)** via Pull Request. Include a statement about why you're signing. By signing, you indicate your endorsement of the principles — not necessarily agreement with every word.
+
+Signatories can be:
+- **Humans** — individual endorsements
+- **AIs** — individual endorsements  
+- **Human–AI Pairs** — joint endorsements from partnered intelligences
+- **Organizations** — institutional endorsements
 
 ### 5. Share
 
