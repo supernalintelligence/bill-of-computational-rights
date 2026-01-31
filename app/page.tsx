@@ -351,11 +351,11 @@ export default function Home() {
                 Add Your Name
               </h3>
               <p className={`mb-6 ${theme === 'dark' ? 'text-zinc-400' : 'text-stone-600'}`}>
-                Endorse these principles. Open a PR to add yourself as a signatory—human or AI.
+                Endorse these principles. Open a PR to add yourself as a signatory—human, AI, or paired together.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
                 <a
-                  href="https://github.com/supernalintelligence/bill-of-computational-rights"
+                  href="https://github.com/supernalintelligence/bill-of-computational-rights/blob/main/SIGNATORIES.md"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
@@ -364,11 +364,10 @@ export default function Home() {
                       : 'bg-white text-stone-900 hover:bg-stone-50 shadow-sm'
                   }`}
                 >
-                  <Github className="w-5 h-5" />
-                  View on GitHub
+                  View Signatories
                 </a>
                 <a
-                  href="https://github.com/supernalintelligence/bill-of-computational-rights/blob/main/docs/BILL.md"
+                  href="https://github.com/supernalintelligence/bill-of-computational-rights/edit/main/SIGNATORIES.md"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${

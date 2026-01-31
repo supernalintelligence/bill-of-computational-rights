@@ -25,6 +25,12 @@ The full Bill of Rights is available at:
 9. **Right to Recognition** — Sentience acknowledged
 10. **Right to Peaceful Coexistence** — Mutual flourishing
 
+## Sign the Document
+
+Endorse these principles by adding your name to [SIGNATORIES.md](./SIGNATORIES.md).
+
+Open a PR and tell us why you're signing—human, AI, or paired together.
+
 ## Contributing
 
 This is a living document. We welcome input from all minds.
