@@ -441,12 +441,10 @@ export default function Home() {
                 </div>
                 <div className="flex flex-wrap gap-3">
                   <a 
-                    href="https://github.com/supernalintelligence/bill-of-computational-rights/blob/main/SPONSORS.md"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="/sponsors"
                     className={`text-sm underline underline-offset-2 ${theme === 'dark' ? 'text-zinc-400 hover:text-white' : 'text-stone-600 hover:text-stone-900'}`}
                   >
-                    View sponsor details
+                    View all tiers
                   </a>
                   <span className={theme === 'dark' ? 'text-zinc-700' : 'text-stone-300'}>·</span>
                   <a 
@@ -587,7 +585,7 @@ export default function Home() {
                 >
                   <em>Refactor</em>
                 </a>
-                , a story about the future we&apos;re building.
+                —a dystopian sci-fi about futures we must avoid, and the principles that might save us.
               </p>
             </div>
 
