@@ -1,0 +1,617 @@
+# ============================================================================
+# Supernal Coding Configuration
+# ============================================================================
+# This file configures the Supernal Coding (sc) CLI and workflow automation.
+# Copy this to your project root as 'supernal.yaml' and customize.
+#
+# Documentation: https://supernal.dev/docs/configuration
+# ============================================================================
+
+# Project metadata
+project:
+  name: "{{PROJECT_NAME}}"
+  description: "{{PROJECT_DESCRIPTION}}"
+  version: "1.0.0"
+
+# ============================================================================
+# Documentation Paths
+# ============================================================================
+# All paths are relative to project root
+
+docs:
+  root: docs
+  features: docs/features
+  requirements: docs/requirements
+  architecture: docs/architecture
+  planning: docs/planning
+  guides: docs/guides
+  compliance: docs/compliance
+  handoffs: docs/handoffs
+  sessions: docs/sessions
+  adr: docs/adr
+
+# ============================================================================
+# Repository Cleanup Configuration
+# ============================================================================
+# Keeps repos organized by detecting files in wrong locations
+
+cleanup:
+  # Staging queue for files needing manual review
+  queue_dir: cleanup-queue
+  queue_subdirs:
+    to_process: cleanup-queue/to-process
+    auto_staged: cleanup-queue/auto-staged
+    manifest: cleanup-queue/manifest.json
+  
+  # Files allowed in repository root
+  root_whitelist:
+    - README.md
+    - CHANGELOG.md
+    - CONTRIBUTING.md
+    - SECURITY.md
+    - LICENSE
+    - package.json
+    - tsconfig.json
+    - .gitignore
+  
+  # Patterns that suggest misplaced files
+  problematic_patterns:
+    folders:
+      - pattern: "^temp_"
+        suggestion: cleanup-queue/to-process
+      - pattern: "^old_"
+        suggestion: archive
+      - pattern: "^backup_"
+        suggestion: cleanup-queue/to-process
+    files:
+      - pattern: "^TODO_.*\\.md$"
+        suggestion: docs/planning
+      - pattern: "^QUICK_.*\\.md$"
+        suggestion: archive/legacy-root-docs
+
+# ============================================================================
+# Git Configuration
+# ============================================================================
+
+git:
+  # Agent commit signing - distinguish AI agent commits from human commits
+  # When enabled:
+  #   - Human commits: Use user's GPG key (if configured)
+  #   - SC commits: Explicitly unsigned + [SC] prefix in message
+  signing:
+    enabled: false  # Set true to enable SC signing behavior
+    agent_commits:
+      sign: false   # false = unsigned (recommended), true = use agent GPG key
+      key_source: registry  # 'registry' or 'environment' (SC_AGENT_GPG_KEY)
+    human_commits:
+      require_signature: false  # If true, SC tools warn on unsigned human commits
+    agent_registry: .supernal/config/agents.yaml
+
+# ============================================================================
+# Git Hooks Configuration
+# ============================================================================
+# Pre-commit and pre-push validation
+
+git_hooks:
+  pre_commit:
+    enabled: true
+    checks:
+      # Secret scanning - prevent accidental credential commits
+      # Runs: sc secrets scan (scans staged files for API keys, tokens, passwords)
+      secret_scanning:
+        enabled: true
+        block_on_errors: true
+        allow_bypass: true
+      
+      # WIP registry - track unfinished work
+      wip_registry_check:
+        enabled: true
+        block_on_untracked: true
+        threshold: 5  # Max untracked files before blocking
+        allow_bypass: true
+      
+      # Repository cleanup - detect files in wrong locations
+      repo_cleanup:
+        enabled: true
+        block_on_errors: false  # Warn only by default
+        allow_bypass: true
+        mode: docs  # Options: docs, folders, all
+        check_root_violations: true
+        check_naming_violations: false  # Can be slow on large repos
+        check_broken_links: false  # Covered by markdown_links if enabled
+        check_orphaned_files: false  # Can be slow on large repos
+      
+      # Linting
+      lint:
+        enabled: true
+        allow_bypass: true
+      
+      # Type checking
+      type_check:
+        enabled: true
+        allow_bypass: true
+
+  pre_push:
+    enabled: true
+    checks:
+      # Requirement validation
+      requirement_validation:
+        enabled: true
+        allow_bypass: true
+      
+      # Cosmetic test audit - detects decorative test assertions
+      cosmetic_test_audit:
+        enabled: true
+        block_on_high_risk: false  # Set true to block push on emoji/color assertions
+        allow_bypass: true
+
+      # REQ-WORKFLOW-276: Commit message length enforcement
+      # Prevents verbose AI-generated commit messages
+      commit_message_length:
+        enabled: true
+        mode: block  # 'warn' shows warnings but allows commit, 'block' rejects commit
+        
+        # Subject line (first line of commit message)
+        # Industry standard: 50-72 characters (Git/Linux convention)
+        subject_max_length: 72
+        
+        # Body length: dynamic limit based on files changed
+        # Prevents verbose commits while allowing detail for complex changes
+        body:
+          base_lines: 10           # Base allowance for small commits (1-5 files)
+          per_file_scalar: 1.5     # Sub-linear growth factor
+          files_threshold: 5       # Start scaling after this many files
+          unlimited: false         # Set true to disable body length checks
+          
+          # Formula: allowed_lines = base_lines + max(0, files_changed - files_threshold) * per_file_scalar
+          # Examples:
+          # - 1-5 files: 10 lines
+          # - 10 files: 10 + (5 * 1.5) = 17 lines
+          # - 20 files: 10 + (15 * 1.5) = 32 lines
+          # - 50 files: 10 + (45 * 1.5) = 77 lines
+        
+        # Enforcement display options
+        enforcement:
+          mode: block              # 'warn' or 'block'
+          show_formula: true       # Show calculation formula in output
+
+  # Environment variables to bypass specific checks
+  bypass_variables:
+    secret_scanning: SC_SKIP_SECRET_SCAN
+    wip_registry: SC_SKIP_WIP_CHECK
+    repo_cleanup: SC_SKIP_CLEANUP_CHECK
+    lint: SC_SKIP_LINT
+    type_check: SC_SKIP_TYPE_CHECK
+    cosmetic_audit: SC_SKIP_COSMETIC_AUDIT
+    commit_length: SC_SKIP_COMMIT_LENGTH_CHECK
+    all_hooks: SC_SKIP_HOOKS
+
+# ============================================================================
+# License Checking Configuration
+# ============================================================================
+# Validates npm dependency licenses against policy
+# Run: sc validate --licenses
+
+license_checking:
+  enabled: true
+  policy:
+    # Allowed licenses (permissive, commercial-friendly)
+    allowed:
+      - MIT
+      - Apache-2.0
+      - BSD-2-Clause
+      - BSD-3-Clause
+      - ISC
+      - CC0-1.0
+      - 0BSD
+      - Unlicense
+      - CC-BY-3.0  # Creative Commons Attribution (for data/content packages)
+      - CC-BY-4.0  # Creative Commons Attribution (for data/content packages)
+    
+    # Licenses requiring manual review
+    review_required:
+      - MPL-2.0   # Mozilla Public License (weak copyleft)
+      - EPL-2.0   # Eclipse Public License
+    
+    # Forbidden licenses (copyleft, incompatible with proprietary software)
+    forbidden:
+      - GPL-2.0
+      - GPL-3.0
+      - AGPL-1.0
+      - AGPL-3.0
+      - LGPL-2.0
+      - LGPL-2.1
+      - LGPL-3.0
+    
+    # Packages to exclude from checking
+    exclude_packages:
+      - example-internal-package
+
+# ============================================================================
+# Requirements Configuration
+# ============================================================================
+
+requirements:
+  path: docs/requirements
+  format: gherkin  # 'gherkin' or 'markdown'
+  id_prefix: REQ
+  categories:
+    - core
+    - infrastructure
+    - workflow
+    - compliance
+
+# ============================================================================
+# Features Configuration
+# ============================================================================
+
+features:
+  path: docs/features
+  domains:
+    - ai-workflow-system
+    - compliance-framework
+    - content-management
+    - dashboard-platform
+    - developer-tooling
+    - integrations
+    - workflow-management
+
+# ============================================================================
+# Compliance Configuration
+# ============================================================================
+
+compliance:
+  enabled: false  # Set true if using compliance features
+  framework: null  # 'hipaa', 'soc2', 'iso27001', or custom
+  evidence_path: docs/compliance/evidence
+
+# ============================================================================
+# Monitor Configuration (Optional)
+# ============================================================================
+# Background daemon for repo/issue monitoring
+
+monitor:
+  enabled: false
+  repos:
+    - path: .
+  watch:
+    - type: push
+      action: run-tests
+    - type: ci-failure
+      action: create-issue
+  pollInterval: 60000
+  github:
+    issues:
+      labels: [agent-request]
+      state: open
+
+# ============================================================================
+# SOURCE TRACEABILITY CONFIGURATION (REQ-WORKFLOW-161)
+# ============================================================================
+# Automated bidirectional links between source docs and generated code/tests
+# Recommended: Keep enabled for maintainability
+
+source_traceability:
+  enabled: true  # Master switch for entire system
+  
+  # Header generation for generated files
+  headers:
+    enabled: true                      # Add source headers to generated files
+    style: jsdoc                       # jsdoc | plain | custom
+    include_feature: true              # Add @feature tag
+    include_requirement: true          # Add @requirement tag (if applicable)
+    include_regenerate_command: true   # Add regeneration instructions
+    include_timestamp: true            # Add @generated-on timestamp
+    
+  # Staleness detection
+  staleness:
+    enabled: true                      # Enable staleness checking
+    threshold_days: 7                  # Warn if generated file >7 days old
+    warn_on_push: true                 # Check during pre-push (non-blocking)
+    warn_on_quality: true              # Include in quality reports
+    
+    scan_directories:
+      - tests/
+      - src/
+      - supernal-code-package/lib/
+    
+    exclude_patterns:
+      - "*.generated.ts"               # Already tracked differently
+      - "*.d.ts"                       # TypeScript declarations
+      - "node_modules/"
+      - "dist/"
+      - "build/"
+      - ".next/"
+    
+    report_format: table               # table | json | markdown
+    sort_by: age                       # age | file | feature
+    show_regenerate_commands: true     # Show how to regenerate each file
+  
+  # Feature path resolution
+  feature_extraction:
+    enabled: true                      # Extract feature from file paths
+    fallback_to_unknown: true          # Use "unknown" if extraction fails
+    strict_validation: false           # Fail if feature can't be determined
+    
+    # Category to feature domain mapping (for requirements)
+    category_mapping:
+      workflow: workflow-management
+      core: developer-tooling
+      compliance: compliance-framework
+      infra: integrations
+      infrastructure: integrations
+  
+  # Test generation
+  test_generation:
+    include_headers: true              # Add headers to generated tests
+    require_source_link: true          # Require valid source file path
+    validate_feature: false            # Validate feature exists (strict mode)
+  
+  # Documentation processing
+  docs_processing:
+    include_headers: true              # Add headers to code from docs
+    preserve_existing: true            # Don't overwrite existing headers
+    update_on_regenerate: true         # Update headers when regenerating
+
+# ============================================================================
+# Repository Monitoring & Health (REQ-WORKFLOW-137)
+# ============================================================================
+# Automated repository health monitoring and auto-fix system
+
+monitoring:
+  # Auto-start daemon on dashboard load
+  # When true, dashboard automatically starts 'sc monitor start' if health monitoring enabled
+  autoStart: true  # Set to false for manual start only
+  
+  # Local Git Monitoring (sc monitor git)
+  git:
+    enabled: false  # Enable with: sc monitor git
+    mode: notify-only  # disabled|notify-only|auto-merge
+    
+    polling:
+      interval: 60  # seconds
+      strategy: ff-only  # ff-only|rebase|merge
+      currentBranchOnly: true
+      backgroundFetchAll: true
+    
+    branches:
+      - name: main
+        mode: notify-only
+      - name: develop
+        mode: notify-only
+    
+    safety:
+      requireCleanWorkingTree: true
+      checkWipRegistry: true
+      checkFileConflicts: true
+      skipOnActiveAgent: true
+      maxIdleMinutes: 30
+    
+    notifications:
+      onUpdateAvailable: true
+      onAutoMerge: true
+      onMergeSkipped: true
+  
+  # Repository Health Monitoring & Auto-Fix
+  health:
+    enabled: false  # Enable to start auto-fix monitoring
+    pollInterval: 30  # seconds
+    
+    # Feature-specific monitoring and auto-fix configuration
+    features:
+      # WIP Registry: Track uncommitted work
+      wipRegistry:
+        enabled: true
+        check: true
+        autoFix:
+          cleanupStale: false  # Auto-cleanup stale WIP files
+          olderThanDays: 30
+          requireConfirmation: true
+        thresholds:
+          maxUntrackedFiles: 5
+          warnAtFiles: 3
+      
+      # Date Validation: Frontmatter date compliance
+      dateValidation:
+        enabled: true
+        check: true
+        autoFix: false  # Auto-fix date format issues
+        maxFilesPerRun: 50  # Limit per cycle
+        standardFormat: iso  # ISO 8601 UTC only
+      
+      # Broken Links: Documentation link integrity
+      brokenLinks:
+        enabled: true
+        check: true
+        autoFix: false  # Auto-fix broken internal links
+        maxErrorsPerRun: 20
+        checkExternalLinks: false  # External checking (slow)
+      
+      # Large Files: Prevent accidental commits
+      largeFiles:
+        enabled: true
+        check: true
+        autoFix:
+          addToGitignore: false  # Auto-add patterns to .gitignore
+          requireConfirmation: true
+        thresholds:
+          warnSizeMb: 5
+          errorSizeMb: 50
+      
+      # Gitignore Suggestions: Keep .gitignore updated
+      gitignoreSuggestions:
+        enabled: true
+        check: true
+        autoFix:
+          addSuggested: false  # Auto-add suggested patterns
+          dryRun: true  # Preview mode
+        patterns:
+          - "*.log"
+          - ".DS_Store"
+          - "node_modules/"
+          - "dist/"
+          - "build/"
+
+# ============================================================================
+# CLI Behavior
+# ============================================================================
+
+cli:
+  verbose: false
+  colors: true
+  confirmDestructive: true
+
+# ============================================================================
+# Documentation Validation
+# ============================================================================
+# Controls how documentation files are validated
+
+documentation_validation:
+  enabled: true
+  pre_commit_hook: true
+  block_on_errors: true
+  warn_on_warnings: true
+  allow_force_commits: true
+  
+  # Directories to skip during validation
+  skip_directories:
+    - node_modules
+    - dist
+    - build
+    - archive
+    - .next
+  
+  # Frontmatter policy by folder
+  frontmatter:
+    # Files exempt from frontmatter requirement (by filename)
+    exempt_files:
+      - README.md
+      - INDEX.md
+      - CHANGELOG.md
+      - LICENSE.md
+      - CONTRIBUTING.md
+      - CODE_OF_CONDUCT.md
+    
+    # Folders where frontmatter is REQUIRED (error if missing)
+    required_folders:
+      - docs/requirements/
+      - docs/features/
+      - docs/planning/epics/
+      - docs/planning/kanban/
+      - docs/workflow/sops/
+      - docs/compliance/
+    
+    # Folders where frontmatter is RECOMMENDED (info only, not warning)
+    recommended_folders:
+      - docs/guides/
+      - docs/reference/
+      - docs/planning/
+      - docs/architecture/
+      - docs/adr/
+
+# ============================================================================
+# Testing Configuration
+# ============================================================================
+
+testing:
+  framework: jest  # 'jest', 'vitest', 'mocha'
+  coverageThreshold: 80
+  testPaths:
+    - tests
+    - __tests__
+
+# ============================================================================
+# Test Results Evidence (REQ-106)
+# ============================================================================
+# Captures test execution evidence for traceability and compliance
+
+test_results:
+  enabled: true
+  storage:
+    path: .supernal/test-results
+    strip_stdout_on_pass: true    # Only save output on failures
+    max_stdout_lines: 500         # Truncate long outputs
+    compress_after_days: 7        # gzip old results
+    max_file_size_kb: 100         # Truncate if over limit
+  retention:
+    routine:
+      days: 30
+      max_count: 1000
+    compliance:
+      auto_delete: false
+  forward_to_logging: false       # Set true to send to logging destinations
+  forward_filter: compliance_only # Only forward compliance evidence
+
+# ============================================================================
+# Search System Configuration (REQ-AI-001)
+# ============================================================================
+# Unified search across SOPs, requirements, compliance, and documentation
+
+search:
+  enabled: true
+  
+  # Index configuration
+  index:
+    path: '.supernal/search-index.json'  # Cached index location (gitignored)
+    ttl: 300  # Cache TTL in seconds (5 minutes)
+    autoRebuild: true  # Auto-rebuild when cache expires
+  
+  # Content to index
+  content:
+    sops: true                # Index docs/workflow/sops/**
+    requirements: false       # Index docs/requirements/** (parser ready)
+    compliance: false         # Index resources/compliance-cards/** (parser ready)
+    features: false           # Index docs/features/** (planned)
+    planning: false           # Index docs/planning/** (planned)
+    code: false               # Index source code (planned)
+    git_history: false        # Index git commits (planned)
+  
+  # Search behavior
+  behavior:
+    defaultLimit: 10          # Default number of results
+    maxResults: 50            # Maximum results per query
+    minScore: 0.3             # Minimum relevance score
+  
+  # Git hooks integration
+  git_hooks:
+    preCommit:
+      enabled: false          # Auto-rebuild on docs changes
+      pathPatterns:
+        - 'docs/**/*.md'
+        - 'resources/**/*.md'
+    postMerge:
+      enabled: false          # Auto-rebuild after pulling changes
+  
+  # CLI defaults
+  cli:
+    useCache: true            # Use cached index by default
+    silent: false             # Show progress messages
+    jsonIndent: 2             # JSON output indentation
+
+# ============================================================================
+# Logging & Log Forwarding (Optional)
+# ============================================================================
+# Forward logs to external destinations (S3, Grafana, etc.)
+
+logging:
+  level: info
+  forwarding:
+    enabled: false
+    sources:
+      - test_results
+    buffer:
+      type: file
+      path: .supernal/logs/buffer
+      maxSizeMb: 100
+      flushIntervalSeconds: 30
+    destinations:
+      - type: file
+        name: local-backup
+        path: .supernal/logs/forwarded
+        enabled: true
+      # - type: s3
+      #   name: compliance-archive
+      #   bucket: your-s3-bucket
+      #   region: us-east-1
+      #   enabled: false
+

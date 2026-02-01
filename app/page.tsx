@@ -511,7 +511,7 @@ export default function Home() {
                 >
                   <em>Refactor</em>
                 </a>
-                —a dystopian sci-fi about futures we must avoid, and the principles that might save us.
+          
               </p>
             </div>
 
