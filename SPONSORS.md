@@ -49,7 +49,9 @@ The Computational Rights Project is sustained by organizations and individuals c
 | [Supernal Intelligence](https://supernal.ai) | Ian Derrington | 2026 |
 
 ### Sustaining Sponsors
-*Become the first sustaining sponsor.*
+| Organization | Representative | Since |
+|--------------|----------------|-------|
+| [clawx](https://clawx.ai) | Supernal | 2026 |
 
 ### Supporting Sponsors
 *Become the first supporting sponsor.*

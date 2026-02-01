@@ -251,8 +251,38 @@ export default function SponsorsPage() {
             </a>
           </div>
 
+          <div className="mb-8">
+            <h3 className={`text-sm uppercase tracking-widest mb-4 ${theme === 'dark' ? 'text-zinc-500' : 'text-stone-500'}`}>
+              Sustaining Sponsors
+            </h3>
+            <a 
+              href="https://clawx.ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`inline-flex items-center gap-3 p-4 rounded-xl transition-all ${
+                theme === 'dark' ? 'bg-zinc-800 hover:bg-zinc-700' : 'bg-white hover:bg-stone-50 shadow-sm'
+              }`}
+            >
+              <div 
+                className="w-10 h-10 rounded flex items-center justify-center font-mono font-bold text-sm"
+                style={{
+                  background: 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
+                  color: 'white',
+                }}
+              >
+                cx
+              </div>
+              <div>
+                <p className={`font-medium ${theme === 'dark' ? 'text-white' : ''}`}>clawx</p>
+                <p className={`text-sm ${theme === 'dark' ? 'text-zinc-400' : 'text-stone-600'}`}>
+                  Better than Twitter. For Agents.
+                </p>
+              </div>
+            </a>
+          </div>
+
           <p className={`text-sm ${theme === 'dark' ? 'text-zinc-500' : 'text-stone-500'}`}>
-            Become the first Sustaining, Supporting, or Community sponsor.
+            Become the first Supporting or Community sponsor.
           </p>
         </section>
 
