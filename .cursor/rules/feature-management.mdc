@@ -1,0 +1,215 @@
+---
+description: Feature management workflow and validation requirements  
+globs: docs/features/**/*.md, supernal-code-package/lib/cli/commands/feature/**/*.js
+alwaysApply: false
+---
+
+# Feature Management
+
+## **Core Principle: Use `sc feature` Commands**
+
+- **Never manually create feature directories** - Use `sc feature create` or copy from templates
+- **Use git mv to move features** - Or use `sc feature move` between domains
+- **Always validate before committing** - Run `sc planning feature`
+- **Follow the structure guide** - See [STRUCTURE-PHILOSOPHY.md](docs/features/STRUCTURE-PHILOSOPHY.md)
+
+---
+
+## **Feature Lifecycle Commands**
+
+```bash
+# Create new feature in a domain
+sc feature create --id=my-feature --domain=ai-workflow-system --epic=epic-name
+
+# Validate feature structure and frontmatter
+sc planning feature --id=my-feature
+sc planning feature --all               # Check all features
+
+# Move between domains
+sc feature move my-feature new-domain
+
+# Auto-fix simple issues
+sc planning feature --id=my-feature --fix
+```
+
+---
+
+## **Domain-Based Structure**
+
+### Available Domains
+
+**Domains are defined in `supernal.yaml` under `features.domains`.**
+
+To see current domains:
+```bash
+# View configured domains
+sc feature list --domains
+
+# Or check supernal.yaml directly
+grep -A 20 "^features:" supernal.yaml
+```
+
+**Default domains** (if using template):
+```
+docs/features/
+├── ai-workflow-system/       # AI automation & workflows
+├── developer-tooling/        # CLI, docs, dev tools
+├── compliance-framework/     # Compliance & regulatory
+├── dashboard-platform/       # Dashboard UI & integrations
+├── workflow-management/      # Workflow & state tracking
+├── content-management/       # Content & social media
+├── integrations/             # External service connections
+├── admin-operations/         # Admin features
+├── licensing-platform/       # Licensing & entitlements
+└── documentation-platform/   # Documentation systems
+```
+
+**Note**: Your project may have different domains. Always check `supernal.yaml` for the definitive list.
+
+### Feature Structure
+```
+{domain}/{feature-name}/
+├── README.md (with frontmatter)
+├── design/           # Architecture, ADRs
+├── planning/         # Implementation plans
+└── requirements/     # Gherkin specs (optional)
+```
+
+---
+
+## **Required Frontmatter**
+
+```yaml
+---
+feature_id: "my-feature"     # Must match folder name
+title: "My Feature"
+domain: "ai-workflow-system" # Domain folder
+epic: "epic-name"            # Optional
+priority: "high"             # high|medium|low
+status: "active"             # active|paused|blocked|complete|deprecated
+assignee: "username"         # GitHub username (optional)
+created: "2025-11-28"
+updated: "2025-11-28"
+branch: "main"
+---
+```
+
+---
+
+## **Validation Rules**
+
+### Structure Validation
+- ✅ README.md exists with valid frontmatter
+- ✅ `feature_id` matches folder name exactly
+- ✅ `domain` matches parent folder (if specified)
+- ✅ All required fields present
+- ✅ Date fields in YYYY-MM-DD format
+
+### Domain Validation
+- ✅ Domain is one of the valid domains
+- ✅ Feature path matches domain structure
+
+
+---
+
+## **Best Practices**
+
+### ✅ DO
+
+- Use `sc feature` commands for all feature operations
+- Validate before committing (`sc planning feature`)
+- Keep features organized by functional domain
+- Use git mv when moving manually to preserve history
+- Update frontmatter timestamps when making changes
+- Follow naming conventions (kebab-case)
+
+### ❌ DON'T
+
+- Manually create directories without templates
+- Create features in root or phase folders
+- Skip validation
+- Use absolute paths in links
+- Create features with duplicate IDs
+- Forget to update timestamps
+
+---
+
+## **Git Integration**
+
+### Workflow Options
+
+**Default**: Work on main with feature-scoped commits
+**When branches needed**: Use work sessions (preferred) or feature branches
+
+See: SOP-0.1.12 for full workflow comparison
+
+### Feature-Scoped Commits (Conventional Commits)
+
+```bash
+# Feature name (when unique) - PRIMARY PATTERN
+git commit -m "feat(my-feature): add template parser (REQ-042)"
+git commit -m "feat(auth): add login endpoint (REQ-042)"
+git commit -m "feat(wip-registry): add user tracking (REQ-144)"
+git commit -m "feat(telemetry): add event tracking (REQ-145)"
+
+# Domain/feature (ONLY when feature name exists in multiple domains)
+git commit -m "feat(workflow-management/planning): update workflow docs (REQ-042)"
+git commit -m "feat(dashboard-platform/planning): add planning view (REQ-043)"
+# Use this ONLY for disambiguation - e.g., "planning" exists in multiple domains
+
+# Domain only (ONLY for cross-feature work within a domain)
+git commit -m "feat(developer-tooling): refactor CLI architecture (REQ-055)"
+# Use this ONLY when work spans multiple features in same domain
+
+# Standard component (for infrastructure/shared code)
+git commit -m "feat(cli): add new command (REQ-042)"
+git commit -m "fix(ui): resolve layout bug (TASK-123)"
+
+# Or use REQ/TASK references without scope (valid but less precise)
+git commit -m "feat: add template parser (REQ-042)"
+git commit -m "fix: resolve validation bug (TASK-123)"
+```
+
+**Key**: Use FEATURE name as primary scope:
+- `feat(feature-name):` - when feature name is unique (most common)
+- `feat(domain/feature-name):` - ONLY when duplicate names exist
+- `feat(domain):` - ONLY for cross-feature work in domain
+- `feat(component):` - for shared infrastructure (api, ui, cli, etc.)
+
+---
+
+## **Troubleshooting**
+
+### Validation Fails with "feature_id mismatch"
+
+**Fix:**
+```bash
+sc planning feature --id=my-feature --fix
+```
+
+### Feature in Wrong Domain
+
+**Fix:**
+```bash
+sc feature move my-feature correct-domain
+```
+
+### Missing Required Directories
+
+**Fix:**
+```bash
+cd docs/features/{domain}/{feature}
+mkdir -p design planning requirements
+```
+
+---
+
+## **Related Documentation**
+
+- **Complete Guide:** [FEATURE-SYSTEM-GUIDE.md](docs/features/FEATURE-SYSTEM-GUIDE.md)
+- **Structure Philosophy:** [STRUCTURE-PHILOSOPHY.md](docs/features/STRUCTURE-PHILOSOPHY.md)
+- **Naming Conventions:** [NAMING-CONVENTIONS.md](docs/features/NAMING-CONVENTIONS.md)
+
+---
+
+**When in doubt, check:** `sc feature --help` or read [FEATURE-SYSTEM-GUIDE.md](docs/features/FEATURE-SYSTEM-GUIDE.md)

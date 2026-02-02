@@ -1,0 +1,66 @@
+# 🚀 Welcome to Supernal Development!
+
+Really excited to work with you to continue the massive progress our team has had! 
+
+## Your First Step - Agent Onboarding
+
+**ALWAYS run this first before starting any work:**
+
+```bash
+sc agent onboard
+```
+
+
+
+## Key Commands for Daily Work
+
+### 📋 Task Management
+
+**`sc requirement list`** - View current requirements and priorities
+**`sc planning req new "Title" --epic=name --priority=high`** - Create new requirement  
+**`sc planning req update <id> --status=done`** - Mark requirement complete
+
+
+### 🔍 Quality & Validation
+
+**`sc validate --all`** - Complete project validation
+**`sc validate --requirements`** - Check requirements only
+**`sc validate --tests`** - Run test validation
+
+
+### 📈 Priority Management  
+
+**`sc priority update`** - Update requirement priorities
+**`sc priority show`** - Display current priority matrix
+**`sc priority matrix`** - Show priority matrix view
+
+
+### 💬 Feedback & Issues
+
+**`sc github issue create "title"`** - Create GitHub issue
+**`sc github pr list`** - List pull requests
+**`sc github status`** - Check GitHub status
+
+
+### 🆘 Getting Help
+
+**`sc --help`** - Show all available commands
+**`sc <command> --help`** - Get detailed help for any command
+
+## Key Principles
+
+- **Trust but Verify**: Hand-offs are helpful but may contain errors
+- **Test Everything**: Verify all claims about working functionality  
+- **Build on Success**: Leverage the good work that's been done
+- **Document Findings**: Update hand-offs with your discoveries
+- **Stay on Track**: Always verify you're on the right branch
+
+## Complete CLI Reference
+
+For comprehensive details on all **35 available commands**, see [Supernal CLI Commands](supernal-cli-commands.mdc).
+
+---
+
+**This is going to be fun and useful!** You're continuing important work - make it count! 🎯
+
+*Last updated: 12/9/2025, 10:30:43 AM*

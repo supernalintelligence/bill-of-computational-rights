@@ -1,0 +1,6 @@
+---
+description: Never `do git add .` 
+globs: 
+alwaysApply: true
+---
+Never git add .

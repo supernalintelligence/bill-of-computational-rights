@@ -1,0 +1,378 @@
+---
+description: Task system for managing small operational work items (1-8 hours)
+globs: docs/planning/tasks/**/*.md, supernal-code-package/src/tasks/**/*.ts
+alwaysApply: true
+---
+
+# Task System
+
+## **Core Principle: Tasks vs Requirements**
+
+**Tasks** = Internal, operational work (1-8 hours, no UX impact)  
+**Requirements** = User-facing functionality (any size, UX impact)
+
+---
+
+## **Decision Framework: Task vs Requirement**
+
+### 🎯 **Primary Question: "Does this change what users experience?"**
+
+| Answer | Type | Use |
+|--------|------|-----|
+| **YES** - Users see/experience the change | **Requirement** | `sc requirement new` |
+| **NO** - Internal only, users don't notice | **Task** | `sc task new` |
+
+### Examples
+
+**User-Facing = Requirement**:
+- ✅ New UI component or screen
+- ✅ New command or feature
+- ✅ Changed behavior or workflow
+- ✅ New integration or capability
+- ✅ Performance improvement users notice
+- ✅ Error messages or notifications
+
+**Internal Only = Task**:
+- ✅ Code refactoring (same behavior)
+- ✅ Bug fix (restores existing behavior)
+- ✅ Dependency update (no UX change)
+- ✅ Documentation update
+- ✅ Test improvements
+- ✅ Build/deployment configuration
+
+### 🚨 **When in Doubt**
+
+Ask: "Will this need user acceptance testing?"
+- **YES** → Requirement
+- **NO** → Task
+
+---
+
+## **Task Criteria (All Must Be True)**
+
+A work item is a TASK only if:
+1. ✅ < 8 hours of work
+2. ✅ No user-facing changes
+3. ✅ No new functionality
+4. ✅ Internal/operational only
+
+If ANY criterion fails → Create a **Requirement** instead.
+
+---
+
+## **Requirement Criteria (Any Can Be True)**
+
+Create a REQUIREMENT if:
+- Changes user experience (UX)
+- Adds new functionality
+- Requires user acceptance criteria
+- Needs behavioral tests (Gherkin)
+- Provides business value
+- Takes > 8 hours (multi-day)
+
+Size doesn't matter - **UX impact determines type**.
+
+---
+
+## **Common Mistakes**
+
+### ❌ **WRONG: "It's small, so it's a task"**
+```bash
+# This is small but user-facing → REQUIREMENT
+sc task new "Add initialization prompt to VSCode extension"
+```
+
+### ✅ **CORRECT: "It's user-facing, so it's a requirement"**
+```bash
+# Even if small, users see it → REQUIREMENT
+sc requirement new "Repository Initialization Detection" \
+  --epic=developer-tooling \
+  --priority=high
+```
+
+### ❌ **WRONG: "It's a bug fix, so it's a task"**
+```bash
+# Bug fix that adds new validation → REQUIREMENT
+sc task new "Add error handling for missing config"
+```
+
+### ✅ **CORRECT: "Bug fix that changes behavior → requirement"**
+```bash
+# Behavior change = requirement
+sc requirement new "Graceful Config Error Handling" \
+  --epic=core \
+  --priority=high \
+  --request-type=bug
+```
+
+---
+
+## **Quick Reference**
+
+```bash
+# Create task (auto-generates TASK-001, TASK-002, etc.)
+sc task new "Fix broken test" --priority=high
+
+# Link to requirement (optional)
+sc task new "Refactor auth helper" --requirement=REQ-042
+
+# View your tasks
+sc task list --me
+sc task list --status=todo
+
+# Start work
+sc task start TASK-001
+
+# Complete task
+sc task complete TASK-001
+
+# Get next task (highest priority)
+sc task next
+sc task next --me  # Your tasks only
+```
+
+---
+
+## **Task Lifecycle**
+
+```
+todo → in-progress → done
+  ↓
+cancelled (if abandoned)
+```
+
+**State Transitions**:
+- `sc task new` → Creates in `active/unassigned/` (status: todo)
+- `sc task assign TASK-001 @user` → Moves to `active/@user/`
+- `sc task start TASK-001` → Updates status to `in-progress`
+- `sc task complete TASK-001` → Moves to `completed/YYYY-MM/@user/`
+- `sc task cancel TASK-001` → Moves to `cancelled/YYYY-MM/@user/`
+
+---
+
+## **File Organization**
+
+```
+docs/planning/tasks/
+├── active/
+│   ├── unassigned/
+│   │   └── TASK-003-update-docs.md
+│   └── @alice/
+│       └── TASK-001-fix-test.md
+├── completed/
+│   └── 2025-12/
+│       └── @alice/
+│           └── TASK-001-fix-test.md
+└── cancelled/
+    └── 2025-12/
+        └── @bob/
+            └── TASK-002-experimental-approach.md
+```
+
+**Files move using `git mv` to preserve history**.
+
+---
+
+## **Task Metadata (YAML Frontmatter)**
+
+```yaml
+---
+id: TASK-001
+title: Fix broken authentication test
+status: in-progress
+priority: high
+assignee: '@alice'
+created: '2025-12-17T10:00:00Z'
+startedAt: '2025-12-17T10:30:00Z'
+linkedRequirements:
+  - REQ-042
+  - REQ-043
+linkedEpic: epic-authentication
+externalIssue: 'github#123'
+---
+
+## Description
+The login test is failing due to...
+
+## Acceptance Criteria
+- [ ] Test passes
+- [ ] No regressions
+```
+
+---
+
+## **Priority Sorting**
+
+`sc task next` returns highest priority task:
+
+**Priority Order**:
+1. `critical` (urgent production issues)
+2. `high` (blocks other work)
+3. `medium` (normal work, default)
+4. `low` (nice to have)
+
+**Tie-Breaking**: Same priority → Oldest task first (by `created` date)
+
+---
+
+## **Integration with Requirements**
+
+Tasks can link to requirements:
+
+```bash
+# Task that implements part of a requirement
+sc task new "Add validation to login form" --requirement=REQ-042
+
+# Multiple requirements
+# (Edit task file to add more under linkedRequirements)
+```
+
+**When to link**:
+- Task implements part of a requirement
+- Task fixes a bug discovered during requirement work
+- Task refactors code touched by a requirement
+
+**When NOT to link**:
+- General cleanup unrelated to requirements
+- Documentation updates (unless requirement-specific)
+
+---
+
+## **Dynamic Rules**
+
+The task system auto-generates `.cursor/rules/task-state.mdc` (not committed):
+
+**Provides**:
+- Your next task (personalized)
+- Task count by status
+- Unassigned tasks
+- Overdue tasks (if deadlines set)
+
+**Example**:
+```markdown
+## Your Next Task
+**TASK-001**: Fix broken test (priority: high, age: 3 days)
+
+## Summary
+- Active tasks: 5 (3 assigned, 2 unassigned)
+- Your tasks: 2 (1 todo, 1 in-progress)
+```
+
+---
+
+## **Best Practices**
+
+### ✅ DO:
+- Keep tasks small (1-8 hours)
+- Assign yourself before starting: `sc task assign TASK-001 --me`
+- Complete promptly: `sc task complete TASK-001` when done
+- Use descriptive titles (not "Fix thing")
+- Link to requirements when relevant
+
+### ❌ DON'T:
+- Create tasks for multi-day work (use requirements)
+- Leave tasks in-progress for weeks (break down or cancel)
+- Create duplicate tasks (check `sc task list` first)
+- Use tasks for user-facing features (use requirements)
+
+---
+
+## **Commit Messages**
+
+```bash
+# Task-only work
+git commit -m "fix: broken auth test (TASK-001)"
+
+# Task + requirement
+git commit -m "refactor(auth): extract helpers (REQ-042, TASK-003)"
+
+# Task completion (closes task)
+git commit -m "chore: update dependencies (closes TASK-005)"
+```
+
+---
+
+## **Example Scenarios**
+
+### **Scenario 1: Quick Bug Fix**
+
+```bash
+# Discovery
+sc task new "Fix broken login test" --priority=high
+# → Creates TASK-001 in active/unassigned/
+
+# Start work
+sc task assign TASK-001 --me
+sc task start TASK-001
+# → Moves to active/@alice/, status: in-progress
+
+# Fix and commit
+git add tests/auth.test.ts
+git commit -m "fix: broken login test (closes TASK-001)"
+
+# Complete
+sc task complete TASK-001
+# → Moves to completed/2025-12/@alice/
+```
+
+---
+
+### **Scenario 2: Refactoring Linked to Requirement**
+
+```bash
+# During REQ-042 work, realize refactoring is needed
+sc task new "Extract auth validation helpers" --requirement=REQ-042 --priority=medium
+# → Creates TASK-002
+
+# Do the work
+sc task start TASK-002
+# ... refactor ...
+git commit -m "refactor(auth): extract validation helpers (REQ-042, closes TASK-002)"
+
+# Complete
+sc task complete TASK-002
+```
+
+---
+
+### **Scenario 3: Finding Next Task**
+
+```bash
+# What should I work on next?
+sc task next --me
+# → Returns: TASK-003 (high priority, 2 days old)
+
+# Start it
+sc task start TASK-003
+```
+
+---
+
+## **Related Documentation**
+
+- [Task System Feature](docs/features/workflow-management/task-system/README.md)
+- [SOP-T.08: Using sc task](docs/workflow/sops/tools/SOP-T.08-using-sc-task.md)
+- [git-commit-smart.mdc](.cursor/rules/git-commit-smart.mdc) - Commit traceability
+- [add-requirement.mdc](.cursor/rules/add-requirement.mdc) - When to use requirements instead
+
+---
+
+## **Implementation Status**
+
+✅ **Phase 1 Complete** (15/15 tests passing):
+- Task creation with auto-ID generation
+- Task listing and filtering
+- Task lifecycle (assign, start, complete, cancel)
+- File organization with status-based directories
+- YAML frontmatter parsing
+- Priority-based sorting
+
+🚧 **Phase 2 Coming**:
+- Dynamic rule generation (`TaskStateRuleWriter`)
+- Dashboard integration
+- Requirement linkage validation
+
+---
+
+**Last Updated**: 2025-12-17  
+**Status**: ✅ Active (Phase 1 complete)

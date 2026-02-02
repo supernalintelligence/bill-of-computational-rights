@@ -1,0 +1,6 @@
+---
+description: Do something? Don't repeat yourself.
+globs:
+alwaysApply: true
+---
+After you do something simple, don't repeat what you did in plain english. That is a waste of time and energy. 

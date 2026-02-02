@@ -1,0 +1,6 @@
+---
+description: Avoid all coding antipatterns 
+globs: 
+alwaysApply: true
+---
+Avoid all coding antipatterns at all times

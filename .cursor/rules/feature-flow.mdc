@@ -1,0 +1,591 @@
+---
+description: Complete feature development workflow from idea to tested implementation
+globs: 
+alwaysApply: false
+---
+
+# Feature Development Flow
+
+## **Core Principle: Formalize → Document → Generate → Test → Verify**
+
+This rule describes the complete workflow for taking an idea and transforming it into a tested, implemented feature.
+
+---
+
+## **The Complete Flow**
+
+### **Phase 1: Formalize the Idea**
+
+Create the feature structure using the CLI:
+
+```bash
+# Create feature in appropriate domain
+sc feature create \
+  --id=my-feature \
+  --domain=developer-tooling \
+  --epic=epic-name \
+  --priority=high \
+  --phase=drafting
+```
+
+**What this creates:**
+- `docs/features/{domain}/my-feature/README.md` with proper frontmatter
+- Required directories: `design/`, `planning/`, `requirements/`
+
+**Frontmatter validation:**
+```yaml
+---
+feature_id: "my-feature"     # Must match folder name
+title: "My Feature"
+domain: "developer-tooling"
+epic: "epic-name"
+priority: "high"
+status: "active"
+phase: "drafting"
+assignee: "@username"
+created: "2025-12-25"
+updated: "2025-12-25"
+branch: "main"
+tests: []                    # Will populate later
+---
+```
+
+---
+
+### **Phase 2: Update Feature Documentation**
+
+#### **2a. Write Implementation Plan**
+
+Create a planning document with the **documentation processor pattern**:
+
+```bash
+# Create planning document
+touch docs/features/{domain}/my-feature/planning/2025-12-25-implementation.md
+```
+
+**Use this exact format in your planning doc:**
+
+```markdown
+# My Feature Implementation Plan
+
+## Overview
+[Brief description]
+
+## Step 1: Create Types
+
+**File**: `src/types/my-feature.ts`
+
+```typescript
+export interface MyFeature {
+  id: string;
+  name: string;
+}
+```
+
+## Step 2: Create Service
+
+**File**: `src/services/my-feature.ts`
+
+```typescript
+import { MyFeature } from '../types/my-feature';
+
+export class MyFeatureService {
+  async create(data: Partial<MyFeature>): Promise<MyFeature> {
+    // Implementation
+  }
+}
+```
+
+## Step 3: Create Tests
+
+**File**: `tests/services/my-feature.test.ts`
+
+```typescript
+import { MyFeatureService } from '../../src/services/my-feature';
+
+describe('MyFeatureService', () => {
+  it('should create feature', async () => {
+    // Test implementation
+  });
+});
+```
+```
+
+#### **2b. Update Feature README**
+
+Add the planning document reference:
+
+```yaml
+---
+feature_id: "my-feature"
+# ... other frontmatter ...
+tests: []  # Will populate after generating test stubs
+---
+
+# My Feature
+
+## Planning Documents
+- [Implementation Plan](planning/2025-12-25-implementation.md)
+
+## Status
+**Phase**: drafting → implementing
+```
+
+---
+
+### **Phase 3: Generate Implementation from Documentation**
+
+Use the documentation processor to create files:
+
+```bash
+# Process planning document (creates files + commits)
+sc docs process \
+  docs/features/{domain}/my-feature/planning/2025-12-25-implementation.md \
+  --commit
+
+# Or without auto-commit (review first)
+sc docs process \
+  docs/features/{domain}/my-feature/planning/2025-12-25-implementation.md
+
+# Review changes
+git status
+git diff
+
+# Manual commit if not using --commit
+git add src/ tests/
+git commit -m "feat(my-feature): generate implementation stubs"
+```
+
+**What happens:**
+- ✅ Files created at specified paths
+- ✅ Directories created automatically
+- ✅ Generation headers added to files
+- ✅ Planning doc updated to show `**File IMPLEMENTED**:`
+- ✅ Code blocks removed from documentation (DRY)
+- ✅ Automatic commit (if using `--commit`)
+
+**After processing, planning doc shows:**
+```markdown
+## Step 1: Create Types
+
+**File IMPLEMENTED**: `src/types/my-feature.ts`  
+Generated from: `2025-12-25-implementation.md` | Commit: abc123f | 2025-12-25
+```
+
+---
+
+### **Phase 4: Create Test Stubs**
+
+If you didn't include tests in the planning doc, create test stubs:
+
+```bash
+# Option A: From requirement (if you have one)
+sc requirement generate-tests REQ-042
+
+# Option B: Manually create test structure
+mkdir -p tests/unit/my-feature
+mkdir -p tests/integration/my-feature
+
+touch tests/unit/my-feature/my-feature.test.ts
+touch tests/integration/my-feature/my-feature.integration.test.ts
+```
+
+**Test stub template:**
+```typescript
+/**
+ * Tests for MyFeature
+ * Feature: my-feature
+ * Requirement: REQ-042 (if applicable)
+ */
+
+import { MyFeatureService } from '../../src/services/my-feature';
+
+describe('REQ-042: MyFeature', () => {
+  describe('MyFeatureService', () => {
+    it('should create feature with valid data', async () => {
+      // TODO: Implement test
+      pending('Implement test');
+    });
+
+    it('should reject invalid data', async () => {
+      // TODO: Implement test
+      pending('Implement test');
+    });
+
+    it('should handle edge cases', async () => {
+      // TODO: Implement test
+      pending('Implement test');
+    });
+  });
+});
+```
+
+---
+
+### **Phase 5: Fill Out Tests**
+
+Implement the test logic:
+
+```typescript
+import { MyFeatureService } from '../../src/services/my-feature';
+
+describe('REQ-042: MyFeature', () => {
+  let service: MyFeatureService;
+
+  beforeEach(() => {
+    service = new MyFeatureService();
+  });
+
+  describe('create', () => {
+    it('should create feature with valid data', async () => {
+      const data = { name: 'Test Feature' };
+      const result = await service.create(data);
+      
+      expect(result).toBeDefined();
+      expect(result.id).toBeTruthy();
+      expect(result.name).toBe('Test Feature');
+    });
+
+    it('should reject invalid data', async () => {
+      await expect(service.create({})).rejects.toThrow('Name is required');
+    });
+
+    it('should generate unique IDs', async () => {
+      const result1 = await service.create({ name: 'Feature 1' });
+      const result2 = await service.create({ name: 'Feature 2' });
+      
+      expect(result1.id).not.toBe(result2.id);
+    });
+  });
+});
+```
+
+**Update feature frontmatter with test paths:**
+```yaml
+---
+feature_id: "my-feature"
+# ... other frontmatter ...
+tests:
+  - tests/unit/my-feature/my-feature.test.ts
+  - tests/integration/my-feature/my-feature.integration.test.ts
+---
+```
+
+---
+
+### **Phase 6: Run Tests (Iteratively)**
+
+Use `sc test` to run specific test sections:
+
+```bash
+# Run only this feature's tests
+sc test tests/unit/my-feature/
+
+# Run specific test file
+sc test tests/unit/my-feature/my-feature.test.ts
+
+# Run with verbose output
+sc test tests/unit/my-feature/ --verbose
+
+# If using test map
+sc test-map show my-feature
+```
+
+**TDD Workflow:**
+```bash
+# 1. Run tests (should fail - red)
+sc test tests/unit/my-feature/
+
+# 2. Implement feature code
+nano src/services/my-feature.ts
+
+# 3. Run tests again (should pass - green)
+sc test tests/unit/my-feature/
+
+# 4. Refactor if needed
+nano src/services/my-feature.ts
+
+# 5. Run tests again (should still pass)
+sc test tests/unit/my-feature/
+
+# Repeat until feature complete
+```
+
+**Only run full test suite when feature is complete:**
+```bash
+# Full suite (before committing feature)
+npm test
+
+# Or using TESTME.sh if it exists
+./TESTME.sh
+```
+
+---
+
+### **Phase 7: Update Feature Status**
+
+When tests pass, update the feature:
+
+```yaml
+---
+feature_id: "my-feature"
+title: "My Feature"
+domain: "developer-tooling"
+phase: "testing"  # or "complete" if fully done
+status: "active"
+updated: "2025-12-25"
+tests:
+  - tests/unit/my-feature/my-feature.test.ts
+  - tests/integration/my-feature/my-feature.integration.test.ts
+---
+```
+
+Add test results section to README:
+
+```markdown
+# My Feature
+
+## Test Coverage
+- ✅ Unit tests: 100% passing (12 tests)
+- ✅ Integration tests: 100% passing (5 tests)
+- ✅ E2E tests: Pending
+
+## Test Evidence
+- Unit test results: `.supernal/test-results/test-2025-12-25-001.json`
+- Integration test results: `.supernal/test-results/test-2025-12-25-002.json`
+```
+
+---
+
+### **Phase 8: Commit Feature**
+
+Commit with proper traceability:
+
+```bash
+# Commit implementation + tests
+git add \
+  src/services/my-feature.ts \
+  src/types/my-feature.ts \
+  tests/unit/my-feature/ \
+  tests/integration/my-feature/ \
+  docs/features/{domain}/my-feature/
+
+git commit -m "feat(my-feature): implement feature with full test coverage (REQ-042)
+
+- Created MyFeatureService with create/update/delete
+- Added comprehensive unit tests (12 tests)
+- Added integration tests (5 tests)
+- Updated feature documentation
+
+closes REQ-042"
+
+# Or use sc git commit smart for automatic traceability
+sc git commit smart
+```
+
+---
+
+## **Complete Checklist**
+
+Before marking feature complete:
+
+- [ ] Feature created with `sc feature create`
+- [ ] Frontmatter complete and valid
+- [ ] Implementation plan created with `**File**: pattern`
+- [ ] `sc docs process` run to generate files
+- [ ] Planning doc shows `**File IMPLEMENTED**:`
+- [ ] Test stubs created
+- [ ] Tests implemented and passing
+- [ ] Feature README updated with test paths in frontmatter
+- [ ] `sc test` passing on feature tests
+- [ ] Full test suite passing (`npm test` or `./TESTME.sh`)
+- [ ] Feature phase updated (drafting → implementing → testing → complete)
+- [ ] Committed with proper message and traceability
+
+---
+
+## **Common Patterns**
+
+### **Pattern 1: Simple Feature (No Requirement)**
+
+```bash
+# 1. Create feature
+sc feature create --id=helper-utils --domain=developer-tooling
+
+# 2. Write planning doc with **File**: pattern
+nano docs/features/developer-tooling/helper-utils/planning/implementation.md
+
+# 3. Generate files
+sc docs process docs/features/developer-tooling/helper-utils/planning/implementation.md --commit
+
+# 4. Create tests
+touch tests/unit/helper-utils.test.ts
+
+# 5. Fill out tests
+nano tests/unit/helper-utils.test.ts
+
+# 6. Run tests iteratively
+sc test tests/unit/helper-utils.test.ts
+
+# 7. Update frontmatter
+nano docs/features/developer-tooling/helper-utils/README.md
+# Add: tests: [tests/unit/helper-utils.test.ts]
+
+# 8. Commit
+git commit -m "feat(helper-utils): complete implementation"
+```
+
+---
+
+### **Pattern 2: Feature with Requirement**
+
+```bash
+# 1. Create requirement first
+sc requirement new "User Authentication" \
+  --epic=auth \
+  --priority=high \
+  --request-type=feature
+
+# 2. Create feature linked to requirement
+sc feature create \
+  --id=user-auth \
+  --domain=ai-workflow-system \
+  --epic=auth
+
+# 3. Write planning doc with REQ-XXX reference
+nano docs/features/ai-workflow-system/user-auth/planning/implementation.md
+
+# 4. Generate files
+sc docs process docs/features/ai-workflow-system/user-auth/planning/implementation.md --commit
+
+# 5. Generate test stubs from requirement
+sc requirement generate-tests REQ-042
+
+# 6. Fill out tests
+nano tests/requirements/req-042/req-042-user-auth.test.ts
+
+# 7. Run tests iteratively
+sc test tests/requirements/req-042/
+
+# 8. Update requirement with test results
+sc requirement update REQ-042 --status=done
+
+# 9. Update feature
+nano docs/features/ai-workflow-system/user-auth/README.md
+# Update: phase: complete
+
+# 10. Commit
+git commit -m "feat(user-auth): implement authentication system (REQ-042, closes REQ-042)"
+```
+
+---
+
+### **Pattern 3: Multi-Agent Feature**
+
+```bash
+# Agent 1: Setup
+sc feature create --id=dashboard --domain=dashboard-platform
+sc docs process docs/features/dashboard-platform/dashboard/planning/implementation.md
+
+# Agent 1: WIP-track their files
+sc workflow wip register src/dashboard/layout.tsx --feature=dashboard --userid=alice
+sc workflow wip register src/dashboard/header.tsx --feature=dashboard --userid=alice
+
+# Agent 2: WIP-track their files (parallel work)
+sc workflow wip register src/dashboard/sidebar.tsx --feature=dashboard --userid=bob
+sc workflow wip register tests/dashboard/layout.test.tsx --feature=dashboard --userid=bob
+
+# Agent 1: Commit when ready
+git add src/dashboard/layout.tsx src/dashboard/header.tsx
+git commit -m "feat(dashboard): add layout components"
+# Files auto-unregistered from WIP
+
+# Agent 2: Commit when ready
+git add src/dashboard/sidebar.tsx tests/dashboard/
+git commit -m "feat(dashboard): add sidebar and tests"
+# Files auto-unregistered from WIP
+```
+
+---
+
+## **Best Practices**
+
+### ✅ DO
+
+- **Use `sc feature create`** for all new features
+- **Write planning docs BEFORE generating code**
+- **Use `**File**: pattern** in planning docs
+- **Run `sc docs process --commit`** to automate file generation
+- **Create test stubs immediately** after generating implementation
+- **Run `sc test <specific-path>`** during development
+- **Update frontmatter** with test paths
+- **Run full suite** only when feature complete
+- **Use WIP registry** for multi-agent work
+- **Commit with traceability** (REQ-XXX, TASK-XXX)
+
+### ❌ DON'T
+
+- **Don't manually create feature directories**
+- **Don't copy-paste code** from planning docs to files
+- **Don't skip the documentation processor**
+- **Don't write tests before generating implementation stubs**
+- **Don't run full test suite** during iteration
+- **Don't forget to update frontmatter** with test paths
+- **Don't commit untested code** (unless marked as WIP)
+- **Don't leave files untracked** (commit, WIP-track, or gitignore)
+
+---
+
+## **Troubleshooting**
+
+### **Problem**: `sc docs process` doesn't detect code blocks
+
+**Solution**: Ensure exact format:
+```markdown
+**File**: `path/to/file.ext`
+
+```language
+code here
+```
+```
+
+### **Problem**: Tests not found by `sc test`
+
+**Solution**: Check test file paths in frontmatter match actual files
+
+### **Problem**: Full test suite too slow during iteration
+
+**Solution**: Use `sc test <path>` for specific tests only
+
+### **Problem**: Generated files have conflicts
+
+**Solution**: Review conflicts, manually merge, update planning doc, re-run `sc docs process`
+
+### **Problem**: WIP registry blocks commit
+
+**Solution**: 
+```bash
+# WIP-track files or commit them
+sc workflow wip register <files> --feature=name
+
+# Or bypass once (not recommended)
+SC_SKIP_WIP_CHECK=true git commit -m "message"
+```
+
+---
+
+## **Related Rules & SOPs**
+
+- [documentation-processor.mdc](.cursor/rules/documentation-processor.mdc) - Documentation processor details
+- [feature-management.mdc](.cursor/rules/feature-management.mdc) - Feature structure and validation
+- [test-requirement-linkage.mdc](.cursor/rules/test-requirement-linkage.mdc) - Test-requirement traceability
+- [wip-registry.mdc](.cursor/rules/wip-registry.mdc) - WIP file tracking
+- [git-commit-smart.mdc](.cursor/rules/git-commit-smart.mdc) - Commit message format
+- [SOP-4.01: Feature Breakdown](docs/workflow/sops/phase-4-planning/SOP-4.01-feature-breakdown-and-estimation.md)
+- [SOP-T.09: Domain Management](docs/workflow/sops/tools/SOP-T.09-domain-management.md)
+
+---
+
+**Last Updated**: 2025-12-25  
+**Status**: ✅ Active  
+**Enforcement**: Recommended workflow, not hard-enforced

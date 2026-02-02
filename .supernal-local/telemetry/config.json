@@ -1,0 +1,33 @@
+{
+  "enabled": false,
+  "consent": {
+    "given": false,
+    "timestamp": null,
+    "version": "1.0"
+  },
+  "mode": "local",
+  "collection": {
+    "commands": true,
+    "rules": true,
+    "validation": true,
+    "performance": true,
+    "errors": true
+  },
+  "sync": {
+    "enabled": false,
+    "frequency": "daily",
+    "endpoint": "https://telemetry.supernal-local.com/events",
+    "batchSize": 100
+  },
+  "privacy": {
+    "anonymizeFilePaths": true,
+    "anonymizeProjectInfo": true,
+    "includeSystemInfo": true,
+    "saltForHashing": "4099a8a14c0c493e7752754e8068b9faaa1d2f969e94ffdb77c36f3e8764b92c"
+  },
+  "localLearning": {
+    "enabled": true,
+    "insightsEnabled": true,
+    "retentionDays": 90
+  }
+}

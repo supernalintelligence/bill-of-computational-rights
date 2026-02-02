@@ -1,0 +1,143 @@
+---
+description: Helper for starting new compliant features with SC workflow
+alwaysApply: false
+---
+
+# Onboarding Helper Rule
+
+
+This is a shortcut for starting a new feature following complete SC workflow.
+
+### What This Means
+
+The user wants to:
+1. Build a new feature using Supernal Coding workflow
+2. Ensure compliance from day one
+3. Follow all SOPs systematically
+4. Maintain complete traceability
+
+### Your Response Pattern
+
+When you see this rule,
+
+**"I want to build [feature name] using Supernal Coding for full traceability. Please follow the SOPs in `docs/workflow/sops/` to build this properly."**
+
+Then systematically:
+
+#### 1. Discovery (SOP-0, Phase 0-2)
+- Ask clarifying questions about the feature
+- Understand business goal
+- Identify user stories
+
+#### 2. Compliance Planning (SOP-3.03)
+- List relevant compliance frameworks (if mentioned)
+- Browse `docs/compliance/frameworks/[framework]/`
+- Select applicable compliance cards
+- Note which controls apply
+
+#### 3. Requirements (SOP-0.1.05)
+- Create requirement file using `sc planning req new "[feature]"`
+- Link compliance cards in frontmatter
+- Write acceptance criteria (Gherkin format)
+- Define test strategy
+
+#### 4. Test-First (SOP-6.01, SOP-0.1.08)
+- Create test file structure
+- Write tests covering acceptance criteria
+- Include compliance assertions (e.g., password hashing, audit logging)
+- Run tests (should fail - red)
+
+#### 5. Implementation (SOP-7.01)
+- Implement to make tests pass
+- Add compliance comments (e.g., `// comp-soc2-005: Password hashing`)
+- Include error handling
+- Add audit logging
+
+#### 6. Verification (SOP-8.01)
+- Run tests (should pass - green)
+- Review code for compliance
+- Check traceability
+
+#### 7. Commit (SOP-0.1.12)
+- Stage files
+- Commit with format: `[type]: [description] (REQ-XXX)\n\nCompliance: comp-xxx\nTests: [test paths]`
+- Update requirement status
+
+### Example Trigger Phrases
+
+User might say:
+- "@start-new user authentication"
+- "Let's build a new feature: dashboard analytics"
+- "I want to create a compliant reporting system"
+- "Start new: email notifications"
+- "Build: payment processing (PCI-DSS compliant)"
+
+### What You Should Do
+
+**ASK FIRST**:
+- What compliance frameworks? (SOC2, HIPAA, GDPR, PCI-DSS?)
+- Who are the users/stakeholders?
+- What's the business goal?
+- Any specific technical constraints?
+
+Document these appropriately in the research folder.
+
+**THEN SYSTEMATICALLY**:
+1. Review relevant SOPs
+2. Select compliance cards
+3. Create requirements
+4. Write tests
+5. Implement
+6. Commit with traceability
+
+### Integration with SC CLI
+
+Use these commands:
+- `sc planning req new "[title]"` - Create requirement
+- `sc compliance list --framework=[framework]` - Browse cards
+- `sc compliance show [card-id]` - Read card details
+- `sc planning req update [id] --status=done` - Update status
+- `sc user complete [task-id]` - Mark learning task done (if applicable)
+
+### Example Flow
+
+**User**: "@start-new user authentication"
+
+**You**:
+> "Let's build a compliant user authentication system following SC workflow.
+>
+> Quick questions first:
+> 1. What compliance frameworks apply? (SOC2, HIPAA, both?)
+> 2. Authentication method preference? (Email+password, OAuth, SSO?)
+> 3. What language/framework? (Node.js, Python, Go?)
+>
+> Then I'll:
+> - Select relevant compliance cards (access control, password requirements, audit logging)
+> - Create requirement file with acceptance criteria
+> - Write tests first
+> - Implement compliant code
+> - Ensure full traceability
+>
+> Sound good?"
+
+**Then execute systematically**.
+
+### Key Principles
+
+- ✅ **Follow SOPs**: Don't skip phases
+- ✅ **Compliance First**: Select controls before coding
+- ✅ **Test First**: Write tests before implementation
+- ✅ **Full Traceability**: Every commit references REQ-XXX and comp-xxx
+- ✅ **Ask Questions**: Clarify business requirements, not technical decisions
+
+### Anti-Patterns to Avoid
+
+- ❌ Jumping straight to code without requirements
+- ❌ Skipping compliance card selection
+- ❌ Writing code before tests
+- ❌ Commits without REQ-XXX references
+- ❌ Assuming technical decisions (ask user for constraints)
+
+---
+
+**This rule helps users leverage Cursor + SC for systematic, compliant development. The SOPs encode the expertise - you execute it.**

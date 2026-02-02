@@ -1,0 +1,5 @@
+---
+description: git mv if moving or renaming a file in a repo. 
+alwaysApply: true
+---
+Instead of using 'mv' to move files or folders, or copying and then deleting old ones, use 'git mv'

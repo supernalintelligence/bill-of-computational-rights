@@ -1,0 +1,6 @@
+---
+description: Follow Through with Implementation
+globs: 
+alwaysApply: true
+---
+Did you just implement a feature? Great! Now make sure it is hooked up properly so it can be tested and used!

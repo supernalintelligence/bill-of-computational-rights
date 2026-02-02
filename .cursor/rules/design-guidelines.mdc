@@ -1,0 +1,440 @@
+---
+description: Professional design system guidelines - use Material icons, image assets, and design systems instead of emojis
+globs: **/*.tsx, **/*.jsx, **/*.ts, **/*.js, **/*.css, **/*.scss
+alwaysApply: false
+---
+
+# Design System Guidelines
+
+## **Core Principle: Professional Visual Language**
+
+Use established design systems, icon libraries, and professional assets instead of emojis for production interfaces.
+
+---
+
+## **Icon & Visual Systems**
+
+### **✅ DO: Use Professional Design Systems**
+
+- **Material Design Icons** (Material-UI, MUI Icons)
+  ```tsx
+  import { CheckCircle, Error, Warning, Info } from '@mui/icons-material';
+  
+  <CheckCircle color="success" />
+  <Error color="error" />
+  <Warning color="warning" />
+  <Info color="info" />
+  ```
+
+- **Lucide React** (Modern, consistent icon set)
+  ```tsx
+  import { Check, AlertCircle, AlertTriangle, Info } from 'lucide-react';
+  
+  <Check className="text-green-500" />
+  <AlertCircle className="text-red-500" />
+  <AlertTriangle className="text-yellow-500" />
+  <Info className="text-blue-500" />
+  ```
+
+- **Heroicons** (Tailwind's icon library)
+  ```tsx
+  import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
+  
+  <CheckCircleIcon className="h-6 w-6 text-green-500" />
+  <XCircleIcon className="h-6 w-6 text-red-500" />
+  ```
+
+- **React Icons** (Universal icon library)
+  ```tsx
+  import { FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
+  
+  <FaCheckCircle className="text-green-500" />
+  <FaExclamationTriangle className="text-yellow-500" />
+  ```
+
+### **❌ DON'T: Use Emojis in UI Components**
+
+```tsx
+// Bad - Emojis are inconsistent across platforms
+<div className="status">
+  ✅ Success
+  ❌ Error
+  ⚠️ Warning
+  ℹ️ Info
+</div>
+
+// Bad - Mixing emojis with text
+<button>🚀 Deploy</button>
+<h1>📊 Dashboard</h1>
+```
+
+---
+
+## **Status Indicators**
+
+### **✅ DO: Use Icon Components**
+
+```tsx
+// Material-UI example
+import { CheckCircle, Cancel, Warning, Info } from '@mui/icons-material';
+
+const StatusBadge = ({ status }: { status: string }) => {
+  const icons = {
+    success: <CheckCircle sx={{ color: 'success.main' }} />,
+    error: <Cancel sx={{ color: 'error.main' }} />,
+    warning: <Warning sx={{ color: 'warning.main' }} />,
+    info: <Info sx={{ color: 'info.main' }} />
+  };
+  
+  return <div className="flex items-center gap-2">{icons[status]}</div>;
+};
+```
+
+```tsx
+// Lucide example with Tailwind
+import { Check, X, AlertTriangle, Info } from 'lucide-react';
+
+const StatusIcon = ({ type }: { type: string }) => {
+  const icons = {
+    success: <Check className="h-5 w-5 text-green-600" />,
+    error: <X className="h-5 w-5 text-red-600" />,
+    warning: <AlertTriangle className="h-5 w-5 text-yellow-600" />,
+    info: <Info className="h-5 w-5 text-blue-600" />
+  };
+  
+  return icons[type];
+};
+```
+
+### **❌ DON'T: Hardcode Emoji Strings**
+
+```tsx
+// Bad
+const getStatusEmoji = (status: string) => {
+  switch (status) {
+    case 'success': return '✅';
+    case 'error': return '❌';
+    case 'warning': return '⚠️';
+    default: return 'ℹ️';
+  }
+};
+```
+
+---
+
+## **Image Assets**
+
+### **✅ DO: Use Organized Asset Structure**
+
+```
+public/
+  assets/
+    icons/
+      - logo.svg
+      - brand-icon.svg
+    images/
+      - hero-banner.webp
+      - feature-1.webp
+    illustrations/
+      - empty-state.svg
+      - error-404.svg
+```
+
+```tsx
+// Use next/image for optimization
+import Image from 'next/image';
+
+<Image 
+  src="/assets/illustrations/empty-state.svg"
+  alt="No items found"
+  width={200}
+  height={200}
+/>
+```
+
+### **✅ DO: Use SVG for Custom Icons**
+
+```tsx
+// Custom SVG component
+export const CustomIcon = ({ className }: { className?: string }) => (
+  <svg 
+    className={className}
+    viewBox="0 0 24 24" 
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M..." fill="currentColor" />
+  </svg>
+);
+```
+
+---
+
+## **Button & Action Elements**
+
+### **✅ DO: Icon + Text Composition**
+
+```tsx
+import { Send, Download, Trash2 } from 'lucide-react';
+
+// Clear, accessible buttons
+<button className="flex items-center gap-2">
+  <Send className="h-4 w-4" />
+  <span>Send Message</span>
+</button>
+
+<button className="flex items-center gap-2">
+  <Download className="h-4 w-4" />
+  <span>Download Report</span>
+</button>
+
+<button className="flex items-center gap-2 text-red-600">
+  <Trash2 className="h-4 w-4" />
+  <span>Delete</span>
+</button>
+```
+
+### **❌ DON'T: Emoji-Based Actions**
+
+```tsx
+// Bad - Not accessible, inconsistent rendering
+<button>📤 Send</button>
+<button>💾 Save</button>
+<button>🗑️ Delete</button>
+```
+
+---
+
+## **Empty States & Placeholders**
+
+### **✅ DO: Use Illustrations or Icon Compositions**
+
+```tsx
+import { Inbox, Search, FileText } from 'lucide-react';
+
+const EmptyState = () => (
+  <div className="flex flex-col items-center justify-center p-8 text-center">
+    <Inbox className="h-16 w-16 text-gray-400 mb-4" />
+    <h3 className="text-lg font-semibold text-gray-900">No messages</h3>
+    <p className="text-gray-500">Start a conversation to see messages here</p>
+  </div>
+);
+```
+
+```tsx
+// Or use custom illustration
+<div className="empty-state">
+  <Image 
+    src="/assets/illustrations/no-results.svg"
+    alt="No search results"
+    width={300}
+    height={200}
+  />
+  <p>No results found for your search</p>
+</div>
+```
+
+### **❌ DON'T: Emoji-Based Empty States**
+
+```tsx
+// Bad - Unprofessional, platform-dependent rendering
+<div className="text-center">
+  <div className="text-6xl mb-4">📭</div>
+  <p>No messages</p>
+</div>
+```
+
+---
+
+## **Documentation & Markdown (Exception)**
+
+### **✅ ACCEPTABLE: Emojis in Documentation**
+
+Emojis are acceptable in:
+- README.md files
+- Documentation prose
+- Commit messages (sparingly)
+- Internal notes and comments
+
+```markdown
+## Features
+
+✅ Authentication system
+🚀 Fast performance
+📱 Mobile responsive
+```
+
+### **❌ DON'T: Emojis in Production UI Components**
+
+Even if sourced from markdown:
+
+```tsx
+// Bad - Don't render markdown emojis as-is
+<div dangerouslySetInnerHTML={{ __html: markdownWithEmojis }} />
+
+// Good - Strip or convert emojis to icons
+<div dangerouslySetInnerHTML={{ __html: sanitizeAndConvertEmojis(markdown) }} />
+```
+
+---
+
+## **Icon Library Setup**
+
+### **Material-UI (MUI)**
+
+```bash
+npm install @mui/material @mui/icons-material @emotion/react @emotion/styled
+```
+
+```tsx
+import { CheckCircle, Settings, AccountCircle } from '@mui/icons-material';
+```
+
+### **Lucide React**
+
+```bash
+npm install lucide-react
+```
+
+```tsx
+import { Check, Settings, User } from 'lucide-react';
+```
+
+### **Heroicons**
+
+```bash
+npm install @heroicons/react
+```
+
+```tsx
+import { CheckCircleIcon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon as CheckCircleSolid } from '@heroicons/react/24/solid';
+```
+
+### **React Icons**
+
+```bash
+npm install react-icons
+```
+
+```tsx
+import { FaCheck } from 'react-icons/fa';
+import { MdSettings } from 'react-icons/md';
+import { AiOutlineUser } from 'react-icons/ai';
+```
+
+---
+
+## **Accessibility Guidelines**
+
+### **✅ DO: Provide Accessible Alternatives**
+
+```tsx
+import { Check } from 'lucide-react';
+
+// Always include aria-label for icon-only buttons
+<button aria-label="Mark as complete">
+  <Check className="h-5 w-5" />
+</button>
+
+// Or use title attribute
+<Check className="h-5 w-5" title="Success" role="img" aria-label="Success" />
+```
+
+### **❌ DON'T: Rely on Emojis for Meaning**
+
+```tsx
+// Bad - Screen readers handle emojis inconsistently
+<button>✅</button>  // May read as "check mark" or "white heavy check mark"
+<span>⚠️</span>     // May read as "warning" or "warning sign"
+```
+
+---
+
+## **Color & Theme Integration**
+
+### **✅ DO: Use Theme-Aware Icons**
+
+```tsx
+// Material-UI with theme colors
+import { Alert } from '@mui/material';
+import { Warning } from '@mui/icons-material';
+
+<Alert 
+  severity="warning" 
+  icon={<Warning />}
+>
+  Warning message
+</Alert>
+
+// Tailwind with color classes
+import { AlertTriangle } from 'lucide-react';
+
+<div className="flex items-center gap-2 text-yellow-600 dark:text-yellow-400">
+  <AlertTriangle className="h-5 w-5" />
+  <span>Warning message</span>
+</div>
+```
+
+---
+
+## **Performance Considerations**
+
+### **✅ DO: Tree-Shake Icons**
+
+```tsx
+// Good - Import only what you need
+import { Check, X, AlertTriangle } from 'lucide-react';
+
+// Good - Named imports from MUI
+import CheckIcon from '@mui/icons-material/Check';
+import ErrorIcon from '@mui/icons-material/Error';
+```
+
+### **❌ DON'T: Import Entire Icon Libraries**
+
+```tsx
+// Bad - Bundles all icons
+import * as Icons from '@mui/icons-material';
+import * as LucideIcons from 'lucide-react';
+```
+
+---
+
+## **Quick Reference**
+
+| Use Case | Recommended Solution | Avoid |
+|----------|---------------------|-------|
+| Status indicators | MUI/Lucide icons | ✅ ❌ ⚠️ |
+| Action buttons | Icon + text | 🚀 💾 🗑️ |
+| Empty states | SVG illustrations | 📭 🔍 📄 |
+| Navigation | MUI/Heroicons | 🏠 ⚙️ 👤 |
+| Notifications | Icon components | 🔔 📧 ⭐ |
+| File types | Custom SVG icons | 📁 📄 🖼️ |
+
+---
+
+## **Existing Codebase Examples**
+
+Reference these files for proper implementation:
+
+- [BlogCard.tsx](apps/docs-next/components/blog/BlogCard.tsx) - Icon usage examples
+- Dashboard components - Status indicator patterns
+- Material-UI theme configuration
+
+---
+
+## **Migration Strategy**
+
+When updating existing emoji usage:
+
+1. **Identify** all emoji usage: `grep -r "[\u{1F000}-\u{1F9FF}]" src/`
+2. **Map** emojis to appropriate icons
+3. **Replace** incrementally, starting with user-facing components
+4. **Test** for visual consistency and accessibility
+
+---
+
+**Last Updated**: 2025-12-01  
+**Applies To**: All React/Next.js UI components  
+**Priority**: Medium (enforce for new code, migrate gradually)

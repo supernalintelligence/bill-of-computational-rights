@@ -1,0 +1,397 @@
+---
+description: Intelligently commit with traceability and task closure
+globs: 
+alwaysApply: true
+---
+
+# Smart Git Commit Rules
+
+When you commit (only when asked to do so):
+
+## Basic Requirements
+
+* **Commit ONLY files you have specifically modified** during your work
+  - ❌ NEVER use `git add .` or `git add -A`
+  - ❌ NEVER commit files you didn't explicitly change
+  - ❌ NEVER commit unrelated files "just to clean them up"
+  - ✅ ONLY commit files directly related to your current task
+  - ✅ Explicitly list each file: `git add file1.ts file2.ts`
+* Write clear, concise commit messages (not excessively long)
+* Include traceability information (REQ-XXX, TASK-XXX, issues)
+
+## Commit Message Length Guidelines
+
+**Subject line**: Max 72 characters (Git standard, shows in `git log --oneline`)
+
+**Body**: Dynamic limit based on files changed (configurable in `supernal.yaml`)
+- **Formula**: `allowed_lines = 10 + max(0, files_changed - 5) × 1.5`
+- **Examples**:
+  - 1-5 files: 10 lines max
+  - 10 files: ~17 lines (10 + 5×1.5)
+  - 20 files: ~32 lines (10 + 15×1.5)
+  - 50 files: ~77 lines (10 + 45×1.5)
+
+**Tips for concise commits**:
+- Use bullet points, not paragraphs
+- Reference docs/issues instead of explaining full context
+- Consider splitting large commits into logical pieces
+- Let code/tests speak - don't repeat what's obvious
+
+**Enforcement**: Configurable warn/block mode (default: warn)
+
+## Commit Message Format
+
+### Standard Format
+```
+type(scope): description (REQ-XXX, TASK-XXX)
+
+[optional body]
+
+closes TASK-XXX
+```
+
+### Components
+
+**Type** (required): `feat|fix|docs|style|refactor|test|chore`
+
+**Scope** (optional but recommended): Feature/component/area affected
+- Format: `type(scope):` like `feat(auth):` or `fix(api):`
+- Must be a valid feature name, domain, or standard component
+- Run `sc feature list` to see valid scopes
+
+**Description** (required): Clear, present tense summary
+
+**Traceability** (required for `feat`/`fix`): At least one of:
+- `(scope)` - Conventional commit scope (e.g., `feat(auth):`)
+- `REQ-XXX` - Links to requirement
+- `TASK-XXX` - Links to task
+
+**Closures** (when applicable): Close tasks/issues
+- `closes TASK-XXX` - Closes task
+- `closes #123` - Closes GitHub issue
+- Multiple closures: `closes TASK-001, closes TASK-002`
+
+### Traceability Enforcement
+
+**`feat:` and `fix:` commits MUST have at least one of:**
+- `(scope)` in conventional format (validated against features/domains/components)
+- `REQ-XXX` reference
+- `TASK-XXX` reference
+
+**Other commit types** (`docs:`, `chore:`, `style:`, etc.) don't require traceability.
+
+### Valid Scopes - REQUIRED FORMAT
+
+**⚠️ IMPORTANT: Feature commits MUST use `domain/feature` format**
+
+#### ✅ Feature Work: ALWAYS Use `feat(domain/feature):`
+
+For ALL feature-specific work, you MUST use the full domain/feature path:
+
+```bash
+# CORRECT - Full domain/feature path
+git commit -m "feat(developer-tooling/vscode-extension): add Rules view"
+git commit -m "feat(workflow-management/task-system): add priority sorting"
+git commit -m "feat(workflow-management/wip-registry): add user tracking"
+git commit -m "feat(dashboard-platform/planning-hierarchy-view): add L1 hover"
+```
+
+**Why this format?**
+- ✅ Unambiguous - clearly identifies domain AND feature
+- ✅ Traceable - maps directly to `docs/features/{domain}/{feature}/`
+- ✅ Parseable - rule writers extract structure automatically
+- ✅ Consistent - no guessing or classification needed
+
+#### 🛠️ Infrastructure: Standard Components (No Domain Required)
+
+For infrastructure/shared code NOT tied to a specific feature:
+
+```bash
+# Standard components (no domain prefix)
+git commit -m "feat(api): add health check endpoint"
+git commit -m "fix(cli): resolve argument parsing bug"
+git commit -m "feat(dashboard): add shared navigation component"
+git commit -m "chore(ci): update build pipeline"
+git commit -m "fix(db): resolve connection pool issue"
+```
+
+**Standard components**: `api`, `ui`, `cli`, `dashboard`, `docs`, `tests`, `db`, `config`, `ci`, `build`, `deps`, `security`
+
+#### ❌ NEVER Use Domain-Only or Feature-Only Scopes
+
+```bash
+# WRONG - Domain without feature (will be BLOCKED)
+git commit -m "feat(developer-tooling): add feature"
+git commit -m "feat(workflow-management): update system"
+
+# WRONG - Feature without domain (will be BLOCKED)
+git commit -m "feat(vscode-extension): add feature"
+git commit -m "feat(task-system): update system"
+
+# CORRECT - Use full domain/feature path
+git commit -m "feat(developer-tooling/vscode-extension): add feature"
+git commit -m "feat(workflow-management/task-system): update system"
+```
+
+**Find valid paths**: Run `sc feature list` to see all `domain/feature` combinations.
+
+## Examples
+
+### Valid Traceability Patterns
+
+```bash
+# REQUIRED: Full domain/feature path for features
+git commit -m "feat(developer-tooling/vscode-extension): add Rules view"
+git commit -m "feat(workflow-management/task-system): add priority sorting"
+git commit -m "feat(workflow-management/wip-registry): add user tracking"
+
+# Standard components for infrastructure
+git commit -m "feat(api): add health endpoint"
+git commit -m "fix(cli): resolve parsing bug"
+git commit -m "feat(dashboard): add new widget"
+
+# Combined with requirement (recommended)
+git commit -m "feat(developer-tooling/vscode-extension): add Rules view (REQ-VSCODE-001)"
+git commit -m "feat(workflow-management/task-system): add sorting (REQ-WORKFLOW-108)"
+```
+
+### Task Completion (Single Task)
+```bash
+git commit -m "fix(auth): validation bug (TASK-042, closes TASK-042)"
+```
+
+### Task Completion (Multiple Tasks)
+```bash
+git commit -m "refactor(api): error handling (closes TASK-050, closes TASK-051)"
+```
+
+### Requirement Implementation (No Task Closure)
+```bash
+git commit -m "feat(auth): add user login endpoint (REQ-127, TASK-042)"
+# Task continues - don't close yet
+```
+
+### Feature Work with Task Closure
+```bash
+git commit -m "feat(auth): add auth tests (REQ-127, closes TASK-042)"
+```
+
+### Multi-Reference
+```bash
+git commit -m "fix(api): resolve race condition (REQ-127, TASK-050, closes #123, closes TASK-050)"
+```
+
+### Documentation (No Traceability Required)
+```bash
+git commit -m "docs: fix typo in README"
+git commit -m "chore: update dependencies"
+```
+
+## Task Closure Rules
+
+### ✅ DO: Close tasks when work is complete
+```bash
+# Single commit completes task
+git commit -m "refactor: extract auth helpers (closes TASK-042)"
+
+# Multi-commit task - only close on final commit
+git commit -m "refactor: extract validators (TASK-050)"
+git commit -m "refactor: add tests (TASK-050)"
+git commit -m "refactor: update docs (closes TASK-050)"
+```
+
+### ❌ DON'T: Close tasks prematurely
+```bash
+# Bad: Task not actually complete
+git commit -m "wip: starting auth work (closes TASK-042)"
+
+# Good: Keep task open until done
+git commit -m "wip: starting auth work (TASK-042)"
+```
+
+### ❌ DON'T: Forget to close completed tasks
+```bash
+# Bad: Work done but task still open
+git commit -m "feat: auth complete (TASK-042)"
+
+# Good: Close the task
+git commit -m "feat: auth complete (closes TASK-042)"
+```
+
+## Nit Detection (Trivial Changes)
+
+Use `--nit` flag to automatically detect and commit only trivial changes:
+
+```bash
+# Preview nit changes
+sc git commit --nit --dry-run --verbose
+
+# Commit nits interactively
+sc git commit --nit
+
+# Auto-commit nits (skip confirmation)
+sc git commit --nit --yes
+```
+
+**What are nits?**
+- Trailing newlines added to files
+- Whitespace normalization
+- Test fixture data updates (non-functional)
+
+**Why separate nits?**
+- Clean git history
+- Easier code review
+- Better bisect-ability
+- Logical separation of concerns
+
+**Workflow:**
+1. Make both nits and substantive changes
+2. Commit nits first: `sc git commit --nit --yes`
+3. Commit substantive: `sc git commit <files> -m "feat: description"`
+
+## Auto-Detection
+
+When you use `sc git commit smart`, the system:
+
+1. **Detects active tasks** (tasks in WIP registry or in-progress)
+2. **Prompts for task closure** if work seems complete
+3. **Validates references** (REQ-XXX, TASK-XXX exist)
+4. **Auto-formats** commit message with proper syntax
+5. **Updates task metadata** (links commits, closes tasks)
+
+## Integration with Other Systems
+
+### WIP Registry
+- Tasks in WIP registry are auto-suggested for commit messages
+- Closed tasks are auto-unregistered from WIP
+
+### Scope Validation
+- Scopes are validated against feature folders, domains, and standard components
+- Invalid scopes are blocked (when enforcement is enabled)
+- Run `sc feature list` to see valid scopes
+
+### Requirements
+- `REQ-XXX` links provide traceability
+- Requirement git_tracking is auto-updated
+
+## File Selection Rules
+
+### ✅ DO: Selective, Intentional Commits
+
+```bash
+# Good: Only files you modified
+git add src/auth.ts tests/auth.test.ts docs/auth-guide.md
+git commit -m "feat: Add authentication (REQ-042)"
+
+# Good: Use sc git commit with explicit files
+sc git commit src/auth.ts tests/auth.test.ts -m "feat: Add authentication"
+
+# Good: Stage files one at a time
+git add src/auth.ts
+git add tests/auth.test.ts
+git commit -m "feat: Add authentication"
+```
+
+### ❌ DON'T: Broad, Unintentional Commits
+
+```bash
+# BAD: Commits everything, including unrelated changes
+git add .
+git commit -m "feat: Add authentication"
+
+# BAD: Commits all modified files
+git add -A
+git commit -m "updates"
+
+# BAD: Commits files you didn't touch
+git add src/unrelated-file.ts  # You didn't modify this!
+git commit -m "feat: My feature"
+```
+
+## 🚨 CRITICAL: Dangerous Git Commands to NEVER Use
+
+### ❌ NEVER: Naked git reset
+
+```bash
+# EXTREMELY DANGEROUS - unstages ALL files, including user's work
+git reset HEAD
+git reset
+
+# CATASTROPHIC - loses all uncommitted work
+git reset --hard
+git reset --hard HEAD
+
+# Good: Reset only specific files you staged
+git reset HEAD path/to/your/file.ts
+git restore --staged path/to/your/file.ts
+```
+
+**Why dangerous:**
+- `git reset HEAD` unstages ALL files in the index, not just yours
+- User may have staged files before you started work
+- You may lose track of what needs to be committed
+- Can create merge conflicts or lost work
+
+### ❌ NEVER: Naked git checkout (old syntax)
+
+```bash
+# DANGEROUS - might discard changes
+git checkout file.ts
+
+# Good: Use restore with explicit intent
+git restore path/to/your/file.ts  # Discard changes (intentional)
+git restore --staged path/to/your/file.ts  # Unstage only
+```
+
+### ✅ DO: Targeted, Safe Operations
+
+```bash
+# Unstage specific files you know you staged
+git restore --staged path/to/file1.ts path/to/file2.ts
+
+# Check what you're about to unstage first
+git diff --cached path/to/file.ts
+
+# Discard changes to specific files (with confirmation)
+git diff path/to/file.ts  # Review first
+git restore path/to/file.ts  # Only if you're certain
+
+# Better: Use git stash for temporary work
+git stash push -m "temporary work on feature X"
+git stash pop  # Restore later
+```
+
+### Safe Unstaging Workflow
+
+```bash
+# 1. Check what's staged
+git diff --cached --name-only
+
+# 2. Identify YOUR changes
+git diff --cached path/to/your/file.ts
+
+# 3. Unstage ONLY your files
+git restore --staged path/to/your/file1.ts path/to/your/file2.ts
+
+# 4. Verify staging area
+git status
+```
+
+### Exception: Explicit User Request
+
+**ONLY commit files beyond your changes when the user explicitly asks:**
+
+```
+User: "Commit everything in the working directory"
+User: "Add all files and commit"
+User: "Clean up and commit all pending changes"
+```
+
+Otherwise, stick to files you specifically modified during your work.
+
+## Related Documentation
+
+- [Task System](docs/features/workflow-management/task-system/README.md)
+- [WIP Registry](.cursor/rules/wip-registry.mdc)
+- [Feature Management](.cursor/rules/feature-management.mdc)
+- [SOP-T.08: Using sc task](docs/workflow/sops/tools/SOP-T.08-using-sc-task.md) 

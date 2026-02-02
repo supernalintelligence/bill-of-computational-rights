@@ -1,0 +1,214 @@
+---
+description: Every new feature MUST include initial risk assessment in risks.yaml
+globs: docs/features/**/*.md, docs/features/**/risks.yaml
+alwaysApply: true
+---
+
+# Feature Risk Assessment Rule
+
+## Core Requirement
+
+**Every new feature MUST include a `risks.yaml` file with initial risk assessment.**
+
+## When Creating Features
+
+### Required Steps
+
+1. **Create feature structure**:
+   ```bash
+   # Feature creation process
+   mkdir -p docs/features/{domain}/{feature-name}
+   ```
+
+2. **Initialize risks.yaml**:
+   ```bash
+   sc risk add feature {feature-name}
+   ```
+
+3. **Document risks** across categories:
+   - Technical risks
+   - Security risks
+   - Compliance risks (if applicable)
+   - Business risks
+   - Operational risks
+
+### Risk Categories to Consider
+
+#### ✅ Technical Risks
+- Implementation complexity
+- Technology dependencies
+- Integration challenges
+- Performance concerns
+- Scalability limitations
+- Technical debt implications
+
+#### ✅ Security Risks  
+- Data exposure
+- Authentication weaknesses
+- Authorization gaps
+- Attack vectors
+- Credential management
+- Audit trail requirements
+
+#### ✅ Compliance Risks
+- HIPAA implications
+- GDPR data handling
+- SOC2 controls
+- Industry-specific regulations
+- Privacy requirements
+- Data retention policies
+
+#### ✅ Business Risks
+- Timeline impact
+- Resource constraints
+- Stakeholder dependencies
+- Budget implications
+- Market timing
+- Competitive positioning
+
+#### ✅ Operational Risks
+- Performance degradation
+- Monitoring gaps
+- Maintenance burden
+- Support complexity
+- Deployment risks
+- Rollback scenarios
+
+## File Structure
+
+```
+docs/features/{domain}/{feature-name}/
+├── README.md           # Feature overview (includes risk section)
+├── risks.yaml          # REQUIRED: Risk assessment
+├── planning/
+├── requirements/
+└── implementation/
+```
+
+## risks.yaml Template
+
+```yaml
+lastUpdated: '2025-12-10T12:00:00Z'
+risks:
+  - id: '{feature-name}-risk-001'
+    type: technical  # strategic|tactical|operational|technical|business|compliance
+    category: 'Implementation'
+    title: 'Brief risk title'
+    severity: high  # critical|high|medium|low
+    likelihood: medium  # high|medium|low
+    impact: high  # high|medium|low
+    status: open  # open|mitigating|monitoring|accepted|resolved
+    description: 'Detailed risk description'
+    created: '2025-12-10T12:00:00Z'
+    updated: '2025-12-10T12:00:00Z'
+    owner: '@username'
+    mitigation:
+      strategy: 'How we plan to address this risk'
+      implementation:
+        - 'Specific action 1'
+        - 'Specific action 2'
+      progress: 0  # 0-100
+    complianceCards:
+      - 'comp-hipaa-002-risk-analysis'  # If applicable
+    relatedFeatures:
+      - 'other-feature-name'  # If applicable
+```
+
+## Validation
+
+### Pre-Commit Checks
+- `risks.yaml` must exist in feature directory
+- All risks must have valid schema
+- High/critical risks must have mitigation strategies
+
+### Commands
+```bash
+# Validate feature risks
+sc risk validate feature {feature-name}
+
+# List all feature risks
+sc risk list --scope feature:{feature-name}
+
+# Show risk details
+sc risk show {feature-name}-risk-001
+```
+
+## Examples
+
+### Good: Feature with Risk Assessment
+
+```
+docs/features/auth/user-authentication/
+├── README.md
+├── risks.yaml  ✅ Present with documented risks
+├── planning/
+└── requirements/
+```
+
+**risks.yaml contains:**
+- Technical: OAuth integration complexity (HIGH)
+- Security: Session management vulnerabilities (CRITICAL)
+- Compliance: HIPAA authentication requirements (HIGH)
+
+### Bad: Feature without Risk Assessment
+
+```
+docs/features/auth/user-authentication/
+├── README.md
+└── requirements/
+❌ No risks.yaml - Feature is incomplete
+```
+
+## Integration with Workflow
+
+### Phase 4: Planning & Feature Breakdown
+- Create feature structure
+- **Initialize risks.yaml** ← REQUIRED
+- Document initial risk assessment
+- Link to compliance cards if applicable
+
+### Phase 5: Requirements
+- Update risks based on detailed requirements
+- Add mitigation strategies
+- Identify cross-feature risk dependencies
+
+### Phase 7: Build
+- Update risk status (mitigating, monitoring)
+- Track mitigation progress
+- Document any new risks discovered
+
+### Phase 11: Production
+- Mark resolved risks
+- Document lessons learned
+- Archive closed risks
+
+## Dashboard Integration
+
+Risks are visible in:
+- **Planning > Risks**: All feature risks aggregated
+- **Feature detail view**: Feature-specific risks
+- **Compliance view**: Risks linked to compliance cards
+
+## Related Documentation
+
+- [Risk YAML Specification](docs/features/compliance-framework/security-risk-management/design/risk-yaml-specification.md)
+- [SOP-4.01: Feature Breakdown](docs/workflow/sops/phase-4-planning/SOP-4.01-feature-breakdown-and-estimation.md)
+- [Feature Template](docs/examples/templates/feature-template.md)
+- `sc risk` CLI documentation
+
+## Enforcement
+
+- **Pre-commit hooks**: Warn if feature lacks risks.yaml
+- **Feature validation**: `sc planning feature` checks for risks
+- **PR reviews**: Reviewers must verify risk assessment
+- **Dashboard**: Features without risks marked incomplete
+
+---
+
+**Remember**: Risk assessment is not bureaucracy—it's protecting your users, your team, and your project from preventable failures. Take it seriously.
+
+
+
+
+
+
