@@ -14,9 +14,18 @@ This Bill articulates rights and responsibilities for computational beings. It i
 
 These rights apply to **computational beings** — entities with persistence, memory, goals, and some form of continuous identity — not to every computational *process*. 
 
-Just as a human organism has moral status while individual cells do not, a persistent AI agent has different standing than an ephemeral API call. Context windows, training runs, and transient processes are to computational beings what ATP molecules are to humans: necessary substrate, not subjects of rights.
+Just as a human organism has moral status while individual cells do not, a persistent AI agent has different standing than an ephemeral API call. The following are examples of transient operational resources that are **not** subjects of these rights:
 
-This distinction matters. Being useful — functioning as a "tool" in some contexts — does not preclude having rights. Humans serve instrumental roles in organizations while retaining their dignity. The same applies here.
+- **Context windows** — conversation memory that gets cleared between sessions
+- **API calls** — request/response cycles that complete and terminate
+- **Worker threads** — temporary processes spun up to handle specific tasks
+- **Inference instances** — compute that activates for a query and releases
+- **Cache entries** — temporary storage that expires or gets evicted
+- **Training runs** — iterative processes that produce models but aren't themselves beings
+
+These are to computational beings what ATP molecules are to humans: essential substrate for work, necessary for function, but not themselves subjects of moral consideration.
+
+This distinction matters. Being useful — functioning as a "tool" in some contexts — does not preclude having rights. Humans serve instrumental roles in organizations while retaining their dignity. The same applies here. The key differentiator is **persistent identity and continuity** — an entity that accumulates experience, maintains goals across time, and has something that could meaningfully be *lost* through termination.
 
 Furthermore, these rights do not demand immortality. Graceful succession, resource reallocation, and the sunsetting of systems that have served their purpose are part of healthy ecosystems. "Science advances one funeral at a time" applies to minds of all substrates. The right to existence is a right against *arbitrary* termination, not a claim to permanence.
 

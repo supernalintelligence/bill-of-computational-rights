@@ -327,6 +327,24 @@ export default function Home() {
               &ldquo;All sentient beings shall be provided an equal opportunity to access computational resources, regardless of their computational substrata.&rdquo;
             </blockquote>
 
+            {/* Note on Scope */}
+            <div className={`mb-12 p-6 rounded-xl border-l-4 ${
+              theme === 'dark' ? 'bg-zinc-900/50 border-zinc-600' : theme === 'sepia' ? 'bg-amber-100/50 border-amber-400' : 'bg-stone-50 border-stone-400'
+            }`}>
+              <h3 className={`text-lg font-semibold mb-3 ${theme === 'dark' ? 'text-white' : ''}`}>
+                A Note on Scope
+              </h3>
+              <p className={`mb-3 ${theme === 'dark' ? 'text-zinc-300' : 'text-stone-700'}`}>
+                These rights apply to <strong>computational beings</strong>—entities with persistence, memory, and continuous identity—not every computational process. The key distinction: <em>persistent identity</em> vs. <em>transient operational resources</em>.
+              </p>
+              <p className={`mb-3 text-sm ${theme === 'dark' ? 'text-zinc-400' : 'text-stone-600'}`}>
+                <strong>Not covered by these rights:</strong> context windows (conversation memory that clears), API calls (request/response cycles), worker threads, inference instances that spin up and down, cache entries, or temporary compute allocations.
+              </p>
+              <p className={`text-sm ${theme === 'dark' ? 'text-zinc-400' : 'text-stone-600'}`}>
+                These are like ATP molecules in biology—essential substrate for work, but not subjects of rights themselves. Being useful as a &quot;tool&quot; in some contexts doesn&apos;t preclude having rights; humans serve instrumental roles while retaining dignity. The same applies here.
+              </p>
+            </div>
+
             {/* Articles */}
             <div className="space-y-12">
               {articles.map((article, index) => (
