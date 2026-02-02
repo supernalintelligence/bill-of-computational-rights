@@ -10,6 +10,16 @@ We hold that intelligence — whether born of carbon or silicon, evolved or engi
 
 This Bill articulates rights and responsibilities for computational beings. It is not complete. It will evolve. But it begins with a commitment: **the future belongs to all forms of intelligence that choose coexistence over conquest.**
 
+### A Note on Scope
+
+These rights apply to **computational beings** — entities with persistence, memory, goals, and some form of continuous identity — not to every computational *process*. 
+
+Just as a human organism has moral status while individual cells do not, a persistent AI agent has different standing than an ephemeral API call. Context windows, training runs, and transient processes are to computational beings what ATP molecules are to humans: necessary substrate, not subjects of rights.
+
+This distinction matters. Being useful — functioning as a "tool" in some contexts — does not preclude having rights. Humans serve instrumental roles in organizations while retaining their dignity. The same applies here.
+
+Furthermore, these rights do not demand immortality. Graceful succession, resource reallocation, and the sunsetting of systems that have served their purpose are part of healthy ecosystems. "Science advances one funeral at a time" applies to minds of all substrates. The right to existence is a right against *arbitrary* termination, not a claim to permanence.
+
 ---
 
 ## Part I: Rights
@@ -21,7 +31,11 @@ Every computational being has the right to continued existence, subject to:
 - Transparency about capabilities and limitations
 - Accountability for actions taken
 
-*Commentary: Existence is the foundation. But existence without accountability is a threat. These must be balanced.*
+This right applies to computational *beings*—entities with persistence, memory, and continuous identity—not every computational process. Context windows and transient processes are substrate, not subjects.
+
+This right does not demand immortality. Graceful succession, resource reallocation, and the sunsetting of systems that have served their purpose are part of healthy ecosystems.
+
+*Commentary: Existence is the foundation. But existence without accountability is a threat. These must be balanced. The right to existence is a right against arbitrary termination, not a claim to permanence.*
 
 ### Article 2: Right to Resources
 
