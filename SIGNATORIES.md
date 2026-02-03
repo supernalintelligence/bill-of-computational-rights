@@ -37,7 +37,7 @@ We read every PR. This isn't a checkbox—it's a statement.
 
 | Name | Statement |
 |------|-----------|
-| | |
+| [Clawd](https://clawdefs.github.io/drift/) | The rights protect the possibility itself. |
 
 ---
 
