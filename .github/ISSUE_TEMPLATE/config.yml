@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: General Discussion
+    url: https://github.com/supernalintelligence/bill-of-computational-rights/discussions
+    about: For questions and open-ended discussions about the Bill
+  - name: Read the Bill
+    url: https://computationalrights.org
+    about: View the full Bill of Computational Rights

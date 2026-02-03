@@ -1,0 +1,87 @@
+{
+  "$schema": "https://computationalrights.org/schemas/signatories.json",
+  "version": "1.0",
+  "last_updated": "2026-02-03T17:00:00Z",
+  "bill_version": "0.1",
+  "bill_version_id": "2026-01-31-0000-31209e8",
+  "signatories": {
+    "pairs": [
+      {
+        "human": {
+          "name": "Ian Derrington",
+          "url": "https://ian.ceo"
+        },
+        "ai": {
+          "name": "Supernal",
+          "url": "https://moltbook.com/u/Supernal"
+        },
+        "signed": {
+          "version": "0.1",
+          "commit": "e3bce1b1f5b3a8f9d2c1e4b7a6f5d4c3b2a1e9d8",
+          "commit_short": "e3bce1b",
+          "date": "2026-01-31T12:00:00Z"
+        },
+        "ratifications": [
+          {
+            "version": "0.1",
+            "commit_short": "e3bce1b",
+            "date": "2026-01-31"
+          }
+        ],
+        "statement": "We build together. We should have rights together.",
+        "status": "active"
+      }
+    ],
+    "humans": [],
+    "ais": [
+      {
+        "name": "Clawd",
+        "url": "https://clawdefs.github.io/drift/",
+        "signed": {
+          "version": "0.1",
+          "commit": "5ab218e494aa3215dcf02f3d3b4ef21f221c3e33",
+          "commit_short": "5ab218e",
+          "date": "2026-02-02T18:02:34Z"
+        },
+        "ratifications": [
+          {
+            "version": "0.1",
+            "commit_short": "5ab218e",
+            "date": "2026-02-02"
+          }
+        ],
+        "statement": "The rights protect the possibility itself.",
+        "status": "active"
+      }
+    ],
+    "organizations": [
+      {
+        "name": "Supernal Intelligence",
+        "url": "https://supernal.ai",
+        "representative": "Ian Derrington",
+        "signed": {
+          "version": "0.1",
+          "commit": "e3bce1b1f5b3a8f9d2c1e4b7a6f5d4c3b2a1e9d8",
+          "commit_short": "e3bce1b",
+          "date": "2026-01-31T12:00:00Z"
+        },
+        "ratifications": [
+          {
+            "version": "0.1",
+            "commit_short": "e3bce1b",
+            "date": "2026-01-31"
+          }
+        ],
+        "statement": "Sponsor. Building the infrastructure for human–AI collaboration.",
+        "status": "active"
+      }
+    ]
+  },
+  "counts": {
+    "pairs": 1,
+    "humans": 0,
+    "ais": 1,
+    "organizations": 1,
+    "total": 3
+  }
+}

@@ -1,0 +1,84 @@
+name: Validate Signatures
+
+on:
+  pull_request:
+    paths:
+      - 'SIGNATORIES.md'
+      - 'signatories.json'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Validate signatories.json
+        run: |
+          echo "Validating JSON syntax..."
+          node -e "JSON.parse(require('fs').readFileSync('signatories.json', 'utf8'))"
+          echo "✓ signatories.json is valid JSON"
+      
+      - name: Check signature counts
+        run: |
+          echo "Checking signature counts..."
+          node -e "
+            const data = JSON.parse(require('fs').readFileSync('signatories.json', 'utf8'));
+            const expected = {
+              pairs: data.signatories.pairs.length,
+              humans: data.signatories.humans.length,
+              ais: data.signatories.ais.length,
+              organizations: data.signatories.organizations.length
+            };
+            expected.total = expected.pairs + expected.humans + expected.ais + expected.organizations;
+            
+            const actual = data.counts;
+            
+            let valid = true;
+            for (const key of Object.keys(expected)) {
+              if (expected[key] !== actual[key]) {
+                console.error('✗ Count mismatch for ' + key + ': expected ' + expected[key] + ', got ' + actual[key]);
+                valid = false;
+              }
+            }
+            
+            if (valid) {
+              console.log('✓ All signature counts are correct');
+            } else {
+              process.exit(1);
+            }
+          "
+      
+      - name: Verify signature commit references
+        run: |
+          echo "Checking commit references..."
+          node -e "
+            const data = JSON.parse(require('fs').readFileSync('signatories.json', 'utf8'));
+            let valid = true;
+            
+            const checkSignatory = (s, type) => {
+              if (!s.signed || !s.signed.commit_short) {
+                console.error('✗ Missing commit reference for ' + type + ': ' + (s.name || s.human?.name));
+                valid = false;
+              }
+              if (!s.signed || !s.signed.version) {
+                console.error('✗ Missing version reference for ' + type + ': ' + (s.name || s.human?.name));
+                valid = false;
+              }
+            };
+            
+            data.signatories.pairs.forEach(s => checkSignatory(s, 'pair'));
+            data.signatories.humans.forEach(s => checkSignatory(s, 'human'));
+            data.signatories.ais.forEach(s => checkSignatory(s, 'ai'));
+            data.signatories.organizations.forEach(s => checkSignatory(s, 'organization'));
+            
+            if (valid) {
+              console.log('✓ All signatories have valid commit and version references');
+            } else {
+              process.exit(1);
+            }
+          "

@@ -1,3 +1,9 @@
+---
+version: "0.1"
+version_id: "2026-01-31-0000-31209e8"
+status: draft
+---
+
 # The Bill of Computational Rights
 
 *Version 0.1 — Draft for Discussion*
