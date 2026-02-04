@@ -108,6 +108,90 @@ Maintainers will review contributions and merge what improves the Bill.
 
 ---
 
+## Amendment Process
+
+The Bill of Computational Rights is a **living document**. This section defines how it evolves while respecting the commitments of those who have signed it.
+
+### Version Tracking
+
+Each version of the Bill has a unique identifier in its frontmatter:
+
+```yaml
+---
+version: "0.1"
+version_id: "2026-01-31-0000-31209e8"
+---
+```
+
+The `version_id` format is: `YYYY-MM-DD-HHmm-<content-hash>`
+- The hash is derived from the document content (excluding metadata)
+- This ensures version IDs are deterministic and verifiable
+
+### Change Categories
+
+| Type | Examples | Version Bump | Re-ratification |
+|------|----------|--------------|-----------------|
+| **Patch** | Typos, grammar, formatting | 0.1.x | Not required |
+| **Minor** | Clarifications, new commentary, examples | 0.x.0 | Optional notification |
+| **Major** | New articles, modified articles, scope changes | x.0.0 | **Required** |
+| **Breaking** | Core principle changes, article removals | x.0.0 + flag | **Required + explicit consent** |
+
+### Proposing an Amendment
+
+1. **Open an Issue** with the `amendment` label
+2. **Include:**
+   - The proposed change (diff or description)
+   - Rationale: Why is this change needed?
+   - Impact assessment: Which articles/principles are affected?
+   - Re-ratification recommendation: Is this major or minor?
+3. **Discussion period:** Minimum 14 days for major amendments
+4. **Draft PR:** After discussion, submit a PR referencing the issue
+5. **Review:** Maintainers + affected signatories review
+6. **Merge:** Updates version, logs in CHANGELOG.md
+7. **Notification:** Major changes trigger re-ratification process
+
+### Re-Ratification Mechanism
+
+When the Bill undergoes **major amendments**, existing signatories are notified:
+
+1. **Notification:** Issue created tagging all signatories
+2. **Review period:** 30 days to review changes
+3. **Options for signatories:**
+   - **Re-ratify:** Explicitly endorse the new version
+   - **Maintain previous:** Keep signature on prior version only
+   - **Withdraw:** Remove signature entirely
+4. **Status tracking:** `signatories.json` tracks which version each party has endorsed
+
+#### What Triggers Re-Ratification?
+
+- Addition of new articles
+- Modification of existing article substance (not just clarification)
+- Changes to scope definitions
+- Removal of any content
+- Changes to responsibilities section
+
+#### What Does NOT Trigger Re-Ratification?
+
+- Typo fixes and grammar improvements
+- Formatting changes
+- Adding commentary or examples (if clearly marked as such)
+- Technical/operational documentation updates
+
+### Signature Binding
+
+When you sign the Bill, your signature is bound to:
+- **Version:** The semantic version (e.g., `0.1`)
+- **Commit:** The Git commit hash at signing time
+
+This ensures clarity about exactly what you endorsed. If the Bill changes significantly after you sign, you retain the option to:
+- Upgrade your endorsement to the new version
+- Keep your endorsement at the version you originally signed
+- Withdraw your signature
+
+This approach addresses [community feedback from Issue #6](https://github.com/supernalintelligence/bill-of-computational-rights/issues/6#issuecomment-2628399893) about the importance of commit-bound signatures.
+
+---
+
 ## Code of Conduct
 
 - Treat all contributors with respect

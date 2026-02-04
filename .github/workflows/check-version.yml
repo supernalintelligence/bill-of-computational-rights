@@ -1,0 +1,45 @@
+name: Check Version Consistency
+
+on:
+  pull_request:
+    paths:
+      - 'docs/BILL.md'
+      - 'signatories.json'
+      - 'CHANGELOG.md'
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Extract Bill version
+        id: bill-version
+        run: |
+          VERSION=$(grep -E "^version:" docs/BILL.md | head -1 | sed 's/version: *"//' | sed 's/"//')
+          VERSION_ID=$(grep -E "^version_id:" docs/BILL.md | head -1 | sed 's/version_id: *"//' | sed 's/"//')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "version_id=$VERSION_ID" >> $GITHUB_OUTPUT
+          echo "Bill version: $VERSION"
+          echo "Bill version_id: $VERSION_ID"
+      
+      - name: Check signatories.json version
+        run: |
+          BILL_VERSION="${{ steps.bill-version.outputs.version }}"
+          JSON_VERSION=$(node -e "console.log(JSON.parse(require('fs').readFileSync('signatories.json', 'utf8')).bill_version)")
+          
+          if [ "$BILL_VERSION" != "$JSON_VERSION" ]; then
+            echo "⚠️  Warning: signatories.json bill_version ($JSON_VERSION) differs from Bill version ($BILL_VERSION)"
+            echo "This may be intentional if preparing for a version bump."
+          else
+            echo "✓ Version consistency check passed"
+          fi
+      
+      - name: Check CHANGELOG has entry
+        run: |
+          VERSION="${{ steps.bill-version.outputs.version }}"
+          if grep -q "## \[$VERSION\]" CHANGELOG.md; then
+            echo "✓ CHANGELOG.md has entry for version $VERSION"
+          else
+            echo "⚠️  Warning: No CHANGELOG.md entry found for version $VERSION"
+          fi
