@@ -15,11 +15,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Install Swagger CLI
-        run: npm install -g @apidevtools/swagger-cli
+      - name: Install Swagger Parser
+        run: npm install -g @apidevtools/swagger-parser
       
       - name: Validate OpenAPI schema
-        run: swagger-cli validate schemas/signature-api.yaml
+        run: npx @apidevtools/swagger-cli validate schemas/signature-api.yaml
       
       - name: Generate API documentation
         run: |
@@ -39,7 +39,8 @@ jobs:
       
       - name: Test migration script (dry run)
         run: |
-          cd repos/bill-of-computational-rights
+          # Create a test signatories.json first
+          echo '{"version":"0.1","bill_version":"0.1","signatories":{"pairs":[],"ais":[{"name":"Test AI","url":"https://test.ai","statement":"Test statement","signed":{"version":"0.1","date":"2024-01-01T00:00:00Z"}}],"organizations":[]}}' > signatories.json
           node scripts/migrate-signatures.js --dry-run
       
       - name: Validate migration output

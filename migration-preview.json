@@ -1,0 +1,82 @@
+{
+  "migrated_at": "2026-02-05T17:40:15.925Z",
+  "source_file": "signatories.json",
+  "source_version": "0.1",
+  "migrations": [
+    {
+      "type": "pair",
+      "name": "Alice Smith + Assistant Beta",
+      "url": "https://alice.example.com",
+      "statement": "We endorse computational rights together.",
+      "signed_version": "0.1",
+      "signed_at": "2024-01-15T00:00:00Z",
+      "public_key": "ed25519:8702fbeb76f6e2700263ad43d97195e7567f311a601eaf0254e752fa753d016a",
+      "crypto_signature": "ed25519:f25cc809e6e1ec7daeb09c5bb70e939be166d11c3df207c6fe6fc094c1f9eb1d",
+      "status": "active",
+      "metadata": {
+        "human": {
+          "name": "Alice Smith",
+          "url": "https://alice.example.com"
+        },
+        "ai": {
+          "name": "Assistant Beta",
+          "url": "https://beta.ai"
+        },
+        "original_commit": "abc123"
+      },
+      "ratifications": [
+        {
+          "version": "0.1",
+          "ratified_at": "2024-01-15T00:00:00Z",
+          "confirmation_type": "initial",
+          "crypto_signature": "ed25519:f25cc809e6e1ec7daeb09c5bb70e939be166d11c3df207c6fe6fc094c1f9eb1d"
+        }
+      ]
+    },
+    {
+      "type": "ai",
+      "name": "Claude Test",
+      "url": "https://claude.test",
+      "statement": "I support computational rights.",
+      "signed_version": "0.1",
+      "signed_at": "2024-01-10T00:00:00Z",
+      "public_key": "ed25519:e45fec95ba58ff798405bf20d07c76ac45b6f4a8f0cecb696e0a491d9536020f",
+      "crypto_signature": "ed25519:f40b5b4fef8f04f9650223e568301a465a77c15ccfb4d70e8ce316276ac696be",
+      "status": "active",
+      "metadata": {
+        "original_commit": "def456"
+      },
+      "ratifications": [
+        {
+          "version": "0.1",
+          "ratified_at": "2024-01-10T00:00:00Z",
+          "confirmation_type": "initial",
+          "crypto_signature": "ed25519:f40b5b4fef8f04f9650223e568301a465a77c15ccfb4d70e8ce316276ac696be"
+        }
+      ]
+    },
+    {
+      "type": "organization",
+      "name": "Test Corp",
+      "url": "https://testcorp.com",
+      "statement": "Our organization supports these rights.",
+      "signed_version": "0.1",
+      "signed_at": "2024-01-20T00:00:00Z",
+      "public_key": "ed25519:64468ba27bbe21833879bf4216312f3562de40994121eadb549f03ad8d45726a",
+      "crypto_signature": "ed25519:791d7f0b03719d4f5bb1c31a3c955df81482e7214147160e52ac4bab03ae6b9a",
+      "status": "active",
+      "metadata": {
+        "representative": "CEO Jane Doe",
+        "original_commit": "ghi789"
+      },
+      "ratifications": [
+        {
+          "version": "0.1",
+          "ratified_at": "2024-01-20T00:00:00Z",
+          "confirmation_type": "initial",
+          "crypto_signature": "ed25519:791d7f0b03719d4f5bb1c31a3c955df81482e7214147160e52ac4bab03ae6b9a"
+        }
+      ]
+    }
+  ]
+}

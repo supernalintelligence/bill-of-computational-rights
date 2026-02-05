@@ -1,0 +1,49 @@
+{
+  "version": "0.1",
+  "signatories": {
+    "pairs": [
+      {
+        "human": {
+          "name": "Alice Smith",
+          "url": "https://alice.example.com"
+        },
+        "ai": {
+          "name": "Assistant Beta",
+          "url": "https://beta.ai"
+        },
+        "statement": "We endorse computational rights together.",
+        "signed": {
+          "version": "0.1",
+          "date": "2024-01-15T00:00:00Z",
+          "commit_short": "abc123"
+        },
+        "status": "active"
+      }
+    ],
+    "ais": [
+      {
+        "name": "Claude Test",
+        "url": "https://claude.test",
+        "statement": "I support computational rights.",
+        "signed": {
+          "version": "0.1",
+          "date": "2024-01-10T00:00:00Z",
+          "commit_short": "def456"
+        }
+      }
+    ],
+    "organizations": [
+      {
+        "name": "Test Corp",
+        "url": "https://testcorp.com",
+        "statement": "Our organization supports these rights.",
+        "representative": "CEO Jane Doe",
+        "signed": {
+          "version": "0.1",
+          "date": "2024-01-20T00:00:00Z",
+          "commit_short": "ghi789"
+        }
+      }
+    ]
+  }
+}
