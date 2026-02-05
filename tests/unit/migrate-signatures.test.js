@@ -1,12 +1,17 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const os = require('os');
 
 describe('Migration Script', () => {
   const testDataDir = path.join(__dirname, '../fixtures');
   const migrateScript = path.join(__dirname, '../../scripts/migrate-signatures.js');
+  let testWorkDir;
 
   beforeEach(() => {
+    // Create a temporary working directory for each test
+    testWorkDir = fs.mkdtempSync(path.join(os.tmpdir(), 'migrate-test-'));
+    
     // Ensure test fixtures directory exists
     if (!fs.existsSync(testDataDir)) {
       fs.mkdirSync(testDataDir, { recursive: true });
@@ -52,64 +57,59 @@ describe('Migration Script', () => {
   });
 
   afterEach(() => {
-    // Clean up generated files
-    const filesToClean = [
-      'migration-preview.json',
-      'migration-signatures.sql',
-      'signatures-migrated.json'
-    ];
-    
-    filesToClean.forEach(file => {
-      if (fs.existsSync(file)) {
-        fs.unlinkSync(file);
-      }
-    });
+    // Clean up the temporary test directory
+    if (fs.existsSync(testWorkDir)) {
+      fs.rmSync(testWorkDir, { recursive: true, force: true });
+    }
   });
 
   test('dry run generates preview without modifying data', () => {
-    // Copy test data to working directory
+    // Copy test data to temporary working directory
     fs.copyFileSync(
       path.join(testDataDir, 'signatories.json'),
-      'signatories.json'
+      path.join(testWorkDir, 'signatories.json')
     );
 
-    // Run migration in dry-run mode
-    execSync(`node ${migrateScript} --dry-run`, { stdio: 'pipe' });
+    // Run migration in dry-run mode from the test directory
+    execSync(`node ${migrateScript} --dry-run`, { 
+      stdio: 'pipe',
+      cwd: testWorkDir
+    });
 
     // Check that preview file was generated
-    expect(fs.existsSync('migration-preview.json')).toBe(true);
+    expect(fs.existsSync(path.join(testWorkDir, 'migration-preview.json'))).toBe(true);
     
     // Check that no actual migration files were created
-    expect(fs.existsSync('migration-signatures.sql')).toBe(false);
-    expect(fs.existsSync('signatures-migrated.json')).toBe(false);
+    expect(fs.existsSync(path.join(testWorkDir, 'migration-signatures.sql'))).toBe(false);
+    expect(fs.existsSync(path.join(testWorkDir, 'signatures-migrated.json'))).toBe(false);
 
-    const preview = JSON.parse(fs.readFileSync('migration-preview.json', 'utf8'));
+    const preview = JSON.parse(fs.readFileSync(path.join(testWorkDir, 'migration-preview.json'), 'utf8'));
     
     expect(preview.migrations).toHaveLength(3); // 1 pair + 1 AI + 1 org
     expect(preview.migrations[0].type).toBe('pair');
     expect(preview.migrations[1].type).toBe('ai');
     expect(preview.migrations[2].type).toBe('organization');
-
-    // Clean up
-    fs.unlinkSync('signatories.json');
   });
 
   test('full migration generates SQL and JSON files', () => {
-    // Copy test data to working directory
+    // Copy test data to temporary working directory
     fs.copyFileSync(
       path.join(testDataDir, 'signatories.json'),
-      'signatories.json'
+      path.join(testWorkDir, 'signatories.json')
     );
 
     // Run full migration
-    execSync(`node ${migrateScript}`, { stdio: 'pipe' });
+    execSync(`node ${migrateScript}`, { 
+      stdio: 'pipe',
+      cwd: testWorkDir
+    });
 
     // Check that migration files were generated
-    expect(fs.existsSync('migration-signatures.sql')).toBe(true);
-    expect(fs.existsSync('signatures-migrated.json')).toBe(true);
+    expect(fs.existsSync(path.join(testWorkDir, 'migration-signatures.sql'))).toBe(true);
+    expect(fs.existsSync(path.join(testWorkDir, 'signatures-migrated.json'))).toBe(true);
 
-    const sqlContent = fs.readFileSync('migration-signatures.sql', 'utf8');
-    const jsonBackup = JSON.parse(fs.readFileSync('signatures-migrated.json', 'utf8'));
+    const sqlContent = fs.readFileSync(path.join(testWorkDir, 'migration-signatures.sql'), 'utf8');
+    const jsonBackup = JSON.parse(fs.readFileSync(path.join(testWorkDir, 'signatures-migrated.json'), 'utf8'));
 
     // Verify SQL contains expected inserts
     expect(sqlContent).toContain('INSERT INTO signatures');
@@ -118,20 +118,20 @@ describe('Migration Script', () => {
     // Verify JSON backup structure
     expect(jsonBackup.migrations).toHaveLength(3);
     expect(jsonBackup.source_file).toBe('signatories.json');
-
-    // Clean up
-    fs.unlinkSync('signatories.json');
   });
 
   test('migration preserves all signature data', () => {
     fs.copyFileSync(
       path.join(testDataDir, 'signatories.json'),
-      'signatories.json'
+      path.join(testWorkDir, 'signatories.json')
     );
 
-    execSync(`node ${migrateScript} --dry-run`, { stdio: 'pipe' });
+    execSync(`node ${migrateScript} --dry-run`, { 
+      stdio: 'pipe',
+      cwd: testWorkDir
+    });
 
-    const preview = JSON.parse(fs.readFileSync('migration-preview.json', 'utf8'));
+    const preview = JSON.parse(fs.readFileSync(path.join(testWorkDir, 'migration-preview.json'), 'utf8'));
     
     // Check pair migration
     const pairMigration = preview.migrations.find(m => m.type === 'pair');
@@ -150,9 +150,6 @@ describe('Migration Script', () => {
     const orgMigration = preview.migrations.find(m => m.type === 'organization');
     expect(orgMigration.name).toBe('Test Corp');
     expect(orgMigration.metadata.representative).toBe('CEO Jane Doe');
-
-    // Clean up
-    fs.unlinkSync('signatories.json');
   });
 
   test('handles missing optional fields gracefully', () => {
@@ -170,17 +167,20 @@ describe('Migration Script', () => {
       }
     };
 
-    fs.writeFileSync('signatories.json', JSON.stringify(minimalSignatories, null, 2));
-    execSync(`node ${migrateScript} --dry-run`, { stdio: 'pipe' });
+    fs.writeFileSync(
+      path.join(testWorkDir, 'signatories.json'), 
+      JSON.stringify(minimalSignatories, null, 2)
+    );
+    execSync(`node ${migrateScript} --dry-run`, { 
+      stdio: 'pipe',
+      cwd: testWorkDir
+    });
 
-    const preview = JSON.parse(fs.readFileSync('migration-preview.json', 'utf8'));
+    const preview = JSON.parse(fs.readFileSync(path.join(testWorkDir, 'migration-preview.json'), 'utf8'));
     const migration = preview.migrations[0];
 
     expect(migration.name).toBe('Minimal AI');
     expect(migration.url).toBeUndefined();
     expect(migration.status).toBe('active'); // default value
-
-    // Clean up
-    fs.unlinkSync('signatories.json');
   });
 });
