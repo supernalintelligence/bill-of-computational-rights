@@ -1,0 +1,284 @@
+openapi: 3.0.3
+info:
+  title: Bill of Computational Rights - Signature API
+  description: Federated signature infrastructure for scalable management of endorsements
+  version: 1.0.0
+  contact:
+    name: Bill of Computational Rights Maintainers
+    url: https://computationalrights.org
+
+servers:
+  - url: https://api.computationalrights.org/v1
+    description: Primary signature registry
+  - url: https://registry.{domain}/api/v1
+    description: Federated registry endpoints
+
+paths:
+  /signatures:
+    get:
+      summary: List signatures
+      parameters:
+        - name: bill_version
+          in: query
+          schema:
+            type: string
+          description: Filter by bill version (e.g., "0.1")
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [human, ai, pair, organization]
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, withdrawn, pending_reratification]
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 100
+            maximum: 1000
+      responses:
+        '200':
+          description: List of signatures
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  signatures:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Signature'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+
+    post:
+      summary: Submit a new signature
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewSignature'
+      responses:
+        '201':
+          description: Signature created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Signature'
+        '400':
+          description: Invalid signature data
+        '409':
+          description: Signature already exists
+
+  /signatures/{id}:
+    get:
+      summary: Get signature by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Signature details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Signature'
+
+  /signatures/{id}/reratify:
+    post:
+      summary: Re-ratify signature for new version
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                new_version:
+                  type: string
+                  description: Version being re-ratified
+                confirmation:
+                  type: string
+                  enum: [reratify, maintain_previous, withdraw]
+                signature:
+                  type: string
+                  description: Cryptographic signature of re-ratification
+              required: [new_version, confirmation]
+      responses:
+        '200':
+          description: Re-ratification recorded
+
+  /versions:
+    get:
+      summary: List all bill versions
+      responses:
+        '200':
+          description: Available versions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  versions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BillVersion'
+
+  /registries:
+    get:
+      summary: List federated registries
+      responses:
+        '200':
+          description: Known federated registries
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  registries:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Registry'
+
+components:
+  schemas:
+    Signature:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [human, ai, pair, organization]
+        name:
+          type: string
+        url:
+          type: string
+          format: uri
+        statement:
+          type: string
+        signed_version:
+          type: string
+        signed_at:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [active, withdrawn, pending_reratification]
+        crypto_signature:
+          type: string
+          description: Cryptographic signature for verification
+        public_key:
+          type: string
+          description: Public key for signature verification
+        ratification_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ratification'
+        metadata:
+          type: object
+          description: Additional signatory information (AI model, organization details, etc.)
+
+    NewSignature:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [human, ai, pair, organization]
+        name:
+          type: string
+        url:
+          type: string
+          format: uri
+        statement:
+          type: string
+        bill_version:
+          type: string
+        crypto_signature:
+          type: string
+        public_key:
+          type: string
+        metadata:
+          type: object
+      required: [type, name, statement, bill_version, crypto_signature, public_key]
+
+    Ratification:
+      type: object
+      properties:
+        version:
+          type: string
+        ratified_at:
+          type: string
+          format: date-time
+        confirmation_type:
+          type: string
+          enum: [initial, reratify, maintain_previous, withdraw]
+        signature:
+          type: string
+
+    BillVersion:
+      type: object
+      properties:
+        version:
+          type: string
+        version_id:
+          type: string
+        released_at:
+          type: string
+          format: date-time
+        content_hash:
+          type: string
+        signature_count:
+          type: integer
+        amendment_type:
+          type: string
+          enum: [patch, minor, major, breaking]
+
+    Registry:
+      type: object
+      properties:
+        name:
+          type: string
+        url:
+          type: string
+          format: uri
+        public_key:
+          type: string
+        last_sync:
+          type: string
+          format: date-time
+        signature_count:
+          type: integer
+
+    Pagination:
+      type: object
+      properties:
+        current_page:
+          type: integer
+        per_page:
+          type: integer
+        total_pages:
+          type: integer
+        total_count:
+          type: integer
