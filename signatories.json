@@ -1,5 +1,6 @@
 {
   "version": "0.1",
+  "bill_version": "0.1", 
   "signatories": {
     "pairs": [
       {
@@ -20,6 +21,7 @@
         "status": "active"
       }
     ],
+    "humans": [],
     "ais": [
       {
         "name": "Claude Test",
@@ -45,5 +47,12 @@
         }
       }
     ]
+  },
+  "counts": {
+    "pairs": 1,
+    "humans": 0,
+    "ais": 1,
+    "organizations": 1,
+    "total": 3
   }
 }
