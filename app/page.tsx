@@ -13,13 +13,13 @@ export default function Home() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     const savedTheme = localStorage.getItem('bor-theme') as Theme;
     const savedView = localStorage.getItem('bor-view') as View;
     const savedAudience = localStorage.getItem('bor-audience') as Audience;
     if (savedTheme) setTheme(savedTheme);
     if (savedView) setView(savedView);
     if (savedAudience) setAudience(savedAudience);
+    setMounted(true);
   }, []);
 
   useEffect(() => {
@@ -625,11 +625,12 @@ const Discord = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const ArrowUpRight = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
-  </svg>
-);
+// Unused component - removed to fix linting
+// const ArrowUpRight = ({ className }: { className?: string }) => (
+//   <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+//     <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
+//   </svg>
+// );
 
 const XTwitter = ({ className }: { className?: string }) => (
   <svg className={className} fill="currentColor" viewBox="0 0 24 24">

@@ -10,9 +10,9 @@ export default function SponsorsPage() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     const savedTheme = localStorage.getItem('bor-theme') as Theme;
     if (savedTheme) setTheme(savedTheme);
+    setMounted(true);
   }, []);
 
   useEffect(() => {

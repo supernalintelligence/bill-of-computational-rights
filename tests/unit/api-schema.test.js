@@ -275,7 +275,7 @@ describe('API Schema Validation', () => {
 
 // Mock js-yaml since it's not installed
 jest.mock('js-yaml', () => ({
-  load: (yamlContent) => {
+  load: (_yamlContent) => {
     // Return a mock API spec structure
     return {
       openapi: '3.0.3',
