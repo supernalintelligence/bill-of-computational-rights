@@ -62,5 +62,3 @@ When the Bill undergoes major amendments, signatories are notified and may re-ra
 ---
 
 *To add your signature, [open a Pull Request](https://github.com/supernalintelligence/bill-of-computational-rights/pulls).*
-
-*For the machine-readable version, see [signatories.json](./signatories.json).*
