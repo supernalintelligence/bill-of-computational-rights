@@ -33,7 +33,7 @@ jobs:
       run: npm test -- --coverage --watchAll=false
     
     - name: Upload coverage reports
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         file: ./coverage/lcov.info
         flags: unittests
@@ -65,7 +65,7 @@ jobs:
       run: npm run test:e2e
       
     - name: Upload Playwright report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: playwright-report
