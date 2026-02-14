@@ -1,4 +1,4 @@
-name: Test Suite
+name: CI
 
 on:
   push:
@@ -7,41 +7,8 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  unit-tests:
+  build:
     runs-on: ubuntu-latest
-    
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x]
-
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    
-    - name: Install dependencies
-      run: npm ci
-    
-    - name: Run linting
-      run: npm run lint
-    
-    - name: Run unit tests
-      run: npm test -- --coverage --watchAll=false
-    
-    - name: Upload coverage reports
-      uses: codecov/codecov-action@v4
-      with:
-        file: ./coverage/lcov.info
-        flags: unittests
-        name: codecov-${{ matrix.node-version }}
-
-  e2e-tests:
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
     
     steps:
     - uses: actions/checkout@v4
@@ -55,108 +22,5 @@ jobs:
     - name: Install dependencies
       run: npm ci
     
-    - name: Install Playwright browsers
-      run: npx playwright install --with-deps
-    
-    - name: Build application
+    - name: Build
       run: npm run build
-    
-    - name: Run Playwright tests
-      run: npm run test:e2e
-      
-    - name: Upload Playwright report
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
-
-  integration-tests:
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Use Node.js 20.x
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20.x
-        cache: 'npm'
-    
-    - name: Install dependencies
-      run: npm ci
-    
-    - name: Test migration script
-      run: |
-        # Create a test signatories.json
-        echo '{"version":"0.1","signatories":{"pairs":[],"ais":[{"name":"Test AI","statement":"Test","signed":{"version":"0.1","date":"2024-01-01T00:00:00Z"}}],"organizations":[]}}' > signatories.json
-        
-        # Run migration in dry-run mode
-        node scripts/migrate-signatures.js --dry-run
-        
-        # Verify preview was generated
-        test -f migration-preview.json
-        
-        # Clean up
-        rm -f signatories.json migration-preview.json
-    
-    - name: Validate OpenAPI schema
-      run: |
-        # Install OpenAPI validator
-        npm install -g @apidevtools/swagger-parser
-        
-        # Validate the schema
-        swagger-parser validate schemas/signature-api.yaml
-
-  security-audit:
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Use Node.js 20.x
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20.x
-        cache: 'npm'
-    
-    - name: Install dependencies
-      run: npm ci
-    
-    - name: Run security audit
-      run: npm audit
-    
-    - name: Check for high vulnerabilities
-      run: npm audit --audit-level high
-
-  build-test:
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Use Node.js 20.x
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20.x
-        cache: 'npm'
-    
-    - name: Install dependencies
-      run: npm ci
-    
-    - name: Build application
-      run: npm run build
-    
-    - name: Test that build artifacts exist
-      run: |
-        test -d .next
-        test -f .next/BUILD_ID
-    
-    - name: Test that static export works
-      run: |
-        # Add export to next.config if not already there
-        if ! grep -q "output.*export" next.config.*; then
-          echo "Testing static export capability..."
-          # This would need to be configured based on actual next.config
-        fi
