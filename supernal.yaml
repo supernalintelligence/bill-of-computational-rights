@@ -9,8 +9,10 @@
 
 # Project metadata
 project:
-  name: "{{PROJECT_NAME}}"
-  description: "{{PROJECT_DESCRIPTION}}"
+  name: "bill-of-computational-rights"
+  emoji: "⚖️"
+  kind: company
+  description: "Bill of Computational Rights"
   version: "1.0.0"
 
 # ============================================================================
