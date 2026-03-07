@@ -1,0 +1,15 @@
+version: '1'
+defaults:
+  inheritance: merge
+  strictness: balanced
+folders:
+  - id: docs-root
+    path: docs
+files:
+  - id: requirement-md
+    glob: .supernal/requirements/**/*.md
+    filenamePattern: ^req-[a-z0-9-]+\.md$
+    requiredSections:
+      - Description
+      - Acceptance Criteria
+      - Test Strategy
