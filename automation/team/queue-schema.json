@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BOCR Automation Queue Item",
+  "type": "object",
+  "required": ["id", "source", "title", "priority", "status", "createdAt"],
+  "properties": {
+    "id": { "type": "string", "minLength": 3 },
+    "source": { "type": "string", "minLength": 2 },
+    "title": { "type": "string", "minLength": 3 },
+    "summary": { "type": "string" },
+    "priority": { "type": "string", "enum": ["P0", "P1", "P2", "P3"] },
+    "status": {
+      "type": "string",
+      "enum": ["new", "triaged", "implemented", "ready_for_approval", "posted", "deferred"]
+    },
+    "brief": {
+      "type": "object",
+      "properties": {
+        "problem": { "type": "string" },
+        "approach": { "type": "string" },
+        "acceptanceCriteria": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": true
+}

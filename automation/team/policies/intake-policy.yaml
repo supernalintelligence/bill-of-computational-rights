@@ -1,0 +1,21 @@
+role: intake
+purpose: "Read-only external intake and queue ingestion"
+allow:
+  reads:
+    - external:github/issues
+    - external:moltbook/research
+    - external:web/research
+    - repo:docs/**
+  writes:
+    - automation/queue/inbox/*.json
+deny:
+  writes:
+    - src/**
+    - app/**
+    - automation/queue/briefs/**
+    - automation/queue/implemented/**
+    - docs/**
+  externalPost: true
+constraints:
+  maxItemsPerRun: 100
+  requireSchema: queue-schema

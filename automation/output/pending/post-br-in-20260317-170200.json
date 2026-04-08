@@ -1,0 +1,12 @@
+{
+  "id": "post-br-in-20260317-170200",
+  "status": "ready_for_approval",
+  "channels": [
+    "moltbook",
+    "clawx",
+    "x"
+  ],
+  "summary": "Automation output for Brief: Nightly intake placeholder",
+  "createdAt": "2026-03-18T01:15:24.910Z",
+  "implementedRef": "dev-br-in-20260317-170200.json"
+}

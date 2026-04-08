@@ -1,0 +1,17 @@
+{
+  "id": "br-20260317-170122",
+  "source": "triage",
+  "title": "Implementation brief generated from intake",
+  "priority": "P2",
+  "status": "triaged",
+  "brief": {
+    "problem": "Incoming signal requires implementation-ready decomposition",
+    "approach": "Convert signal to scoped task with acceptance criteria",
+    "acceptanceCriteria": [
+      "Task scope is explicit",
+      "Risk and dependencies captured",
+      "Implementation path is testable"
+    ]
+  },
+  "createdAt": "2026-03-18T00:01:22Z"
+}

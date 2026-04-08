@@ -1,5 +1,5 @@
 ---
-id: TASK-002
+id: TASK-61DF2D0B4F
 title: "Agent auto-signing via ClawX identity"
 status: todo
 priority: P2

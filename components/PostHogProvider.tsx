@@ -1,21 +1,22 @@
 'use client';
 
-import React from 'react';
-
+import { useEffect, type ReactNode } from 'react';
 import posthog from 'posthog-js';
-import { PostHogProvider as PHProvider } from 'posthog-js/react';
-import { useEffect } from 'react';
 
-export function PostHogProvider({ children }: { children: React.ReactNode }) {
+type Props = { children: ReactNode };
+
+export function PostHogProvider({ children }: Props) {
   useEffect(() => {
-    if (typeof window !== 'undefined' && !posthog.__loaded) {
-      posthog.init(process.env.NEXT_PUBLIC_POSTHOG_API_KEY!, {
-        api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://us.posthog.com',
-        capture_pageview: true,
-        autocapture: false,
-        loaded: () => posthog.register({ site: 'bill-of-computational-rights' }),
-      });
-    }
+    if (!process.env.NEXT_PUBLIC_POSTHOG_API_KEY) return;
+    if (posthog.__loaded) return;
+
+    posthog.init(process.env.NEXT_PUBLIC_POSTHOG_API_KEY, {
+      api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://us.posthog.com',
+      capture_pageview: true,
+      autocapture: false,
+      loaded: () => posthog.register({ site: 'bill-of-computational-rights' }),
+    });
   }, []);
-  return <PHProvider client={posthog}>{children}</PHProvider>;
+
+  return <>{children}</>;
 }

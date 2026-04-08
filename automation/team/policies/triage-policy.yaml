@@ -1,0 +1,18 @@
+role: triage
+purpose: "Prioritize intake and author implementation briefs"
+allow:
+  reads:
+    - automation/queue/inbox/*.json
+    - docs/**
+  writes:
+    - automation/queue/briefs/*.json
+deny:
+  writes:
+    - src/**
+    - app/**
+    - automation/queue/inbox/**
+    - automation/queue/implemented/**
+  externalPost: true
+constraints:
+  requirePriority: true
+  requireAcceptanceCriteria: true

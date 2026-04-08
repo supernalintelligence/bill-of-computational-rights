@@ -1,0 +1,24 @@
+role: dev
+purpose: "Implement briefs and produce PR-ready outputs"
+allow:
+  reads:
+    - automation/queue/briefs/*.json
+    - src/**
+    - app/**
+    - docs/**
+  writes:
+    - src/**
+    - app/**
+    - tests/**
+    - docs/**
+    - automation/queue/implemented/*.json
+    - automation/output/pending/*.json
+deny:
+  externalPostWithoutApproval: true
+constraints:
+  requiredChecks:
+    - npx tsc --noEmit
+    - npm run build
+  repoScope:
+    root: .
+    disallowParentTraversal: true

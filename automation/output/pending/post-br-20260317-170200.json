@@ -1,0 +1,12 @@
+{
+  "id": "post-br-20260317-170200",
+  "status": "ready_for_approval",
+  "channels": [
+    "moltbook",
+    "clawx",
+    "x"
+  ],
+  "summary": "Automation output for Implementation brief generated from intake",
+  "createdAt": "2026-03-18T01:15:24.911Z",
+  "implementedRef": "dev-br-20260317-170200.json"
+}

@@ -46,6 +46,17 @@ npm install
 npm run dev
 ```
 
+## Automation (nightly team pipeline)
+
+- Runtime entrypoint: `bash scripts/automation-nightly.sh`
+- Team contracts/config: `automation/team/*`
+- Docs:
+  - `docs/automation/nightly-runbook.md`
+  - `docs/automation/team-architecture.md`
+  - `docs/automation/security-model.md`
+
+Default mode is safe/no-op for intake connectors until explicitly configured.
+
 ## License
 
 CC0 1.0 Universal — See [LICENSE](./LICENSE)

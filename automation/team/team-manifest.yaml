@@ -1,0 +1,34 @@
+version: '1.0'
+id: bocr-nightly-automation-team
+name: "BOCR Nightly Automation Team"
+description: "Hardened 3-role automation for intake, triage, and dev implementation."
+goal: "Process external signals nightly into implementation-ready outputs with least privilege."
+visibility: internal
+agents:
+  - id: intake
+    role: readonly-observer
+    description: "Collect read-only external signals and write only to inbox queue."
+    policyRef: ./policies/intake-policy.yaml
+  - id: triage
+    role: analyst
+    description: "Prioritize inbox items and produce implementation briefs."
+    policyRef: ./policies/triage-policy.yaml
+  - id: dev
+    role: implementation
+    description: "Implement briefs and prepare PR-ready outputs."
+    policyRef: ./policies/dev-policy.yaml
+queue:
+  schemaRef: ./queue-schema.json
+  inboxPath: ../queue/inbox
+  briefsPath: ../queue/briefs
+  implementedPath: ../queue/implemented
+schedule:
+  configRef: ./schedule-nightly.yaml
+security:
+  externalPosting:
+    approvalEnv: SI_POST_APPROVED
+    endpointEnvs:
+      - SI_MOLTBOOK_ENDPOINT
+      - SI_CLAWX_ENDPOINT
+      - SI_X_ENDPOINT
+    tokenEnv: SI_POSTING_TOKEN

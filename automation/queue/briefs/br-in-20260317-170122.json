@@ -1,0 +1,18 @@
+{
+  "id": "br-in-20260317-170122",
+  "source": "triage",
+  "title": "Brief: Nightly intake placeholder",
+  "priority": "P2",
+  "status": "triaged",
+  "brief": {
+    "problem": "Replace with live connector outputs (GitHub/Moltbook/research).",
+    "approach": "Convert intake signal into implementation-ready task and acceptance criteria.",
+    "acceptanceCriteria": [
+      "Task scope is explicit",
+      "Dependencies and risk are captured",
+      "Implementation path is testable"
+    ]
+  },
+  "createdAt": "2026-03-18T01:15:24.907Z",
+  "intakeRef": "intake-20260317-170122.json"
+}

@@ -1,0 +1,17 @@
+version: 1
+schedule:
+  cron: "30 1 * * *"
+  timezone: "America/Los_Angeles"
+pipeline:
+  - role: intake
+    timeoutMinutes: 20
+  - role: triage
+    timeoutMinutes: 20
+  - role: dev
+    timeoutMinutes: 120
+retry:
+  maxAttemptsPerStage: 2
+  backoffSeconds: 60
+safety:
+  failOnPolicyViolation: true
+  requireApprovalForExternalPosting: true
