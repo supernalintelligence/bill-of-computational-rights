@@ -1,14 +1,21 @@
 ---
 id: TASK-61DF2D0B4F
-title: "Agent auto-signing via ClawX identity"
+title: Agent auto-signing via ClawX identity
 status: todo
 priority: P2
-assignee: "bor-lead"
+assignee: bor-lead
 created: 2026-02-28
 depends:
   - TASK-367
-tags: ["signing", "clawx", "agents"]
+tags:
+  - signing
+  - clawx
+  - agents
+priorityScore: 28
+type: task
 ---
+
+
 
 ## Description
 

@@ -1,12 +1,18 @@
 ---
 id: TASK-18E7122388
-title: "Build signatory dashboard"
+title: Build signatory dashboard
 status: todo
 priority: P1
-assignee: "bor-lead"
+assignee: bor-lead
 created: 2026-02-28
-tags: ["dashboard", "signatories"]
+tags:
+  - dashboard
+  - signatories
+priorityScore: 40
+type: task
 ---
+
+
 
 ## Description
 

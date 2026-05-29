@@ -1,12 +1,18 @@
 ---
 id: TASK-61DF2D0B4D
-title: "Track roadmap milestones as tasks"
+title: Track roadmap milestones as tasks
 status: todo
 priority: P3
-assignee: "bor-lead"
+assignee: bor-lead
 created: 2026-02-28
-tags: ["roadmap", "planning"]
+tags:
+  - roadmap
+  - planning
+priorityScore: 16
+type: task
 ---
+
+
 
 ## Description
 
