@@ -617,3 +617,9 @@ logging:
       #   region: us-east-1
       #   enabled: false
 
+
+git_sync:
+  workflow: personal-dev
+  dev_branch: ian-dev
+  protected_branches:
+    - main master 
