@@ -617,3 +617,6 @@ logging:
       #   region: us-east-1
       #   enabled: false
 
+
+git_sync:
+  dev_branch: main
