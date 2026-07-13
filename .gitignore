@@ -42,3 +42,6 @@ next-env.d.ts
 
 # Local interaction logs
 .beads/
+
+# macOS Spotlight
+.metadata_never_index
